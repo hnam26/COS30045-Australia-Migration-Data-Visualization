@@ -14,7 +14,7 @@ var rowConverter = (d) => {
 var LineChart = (dataset1, dataset2, category) => {
     var w = 1000; // Width
     var h = 450; // Height
-    var paddingRight = paddingTop = 50;
+    var paddingRight = paddingTop = 70;
     var axisLeft = 50;
     var axisBot = 100; // Space for bottom axis
     var xScale = d3.scaleTime()
@@ -76,7 +76,7 @@ var LineChart = (dataset1, dataset2, category) => {
             var len = this.getTotalLength();
             return function (t) { return (d3.interpolateString("0," + len, len + ",0"))(t); };
         });
-
+    
     // Create x-axis
     const gx = svg.append("g")
         .attr("transform", `translate(0, ${h - axisBot})`)
@@ -95,6 +95,14 @@ var LineChart = (dataset1, dataset2, category) => {
     gy.selectAll("text")
         .attr("dx", "-0.5em") // Adjust the x-offset
         .style("text-anchor", "end");
+    
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", axisLeft - 55) // Adjust position to place it next to the y-axis
+        .attr("x", 0 - (h / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Thousands");
 
 
     // Create a group for the legend
@@ -156,11 +164,15 @@ var LineChart = (dataset1, dataset2, category) => {
         .attr("fill", "#2980B9")
         .style("opacity", 0) // Initially set to invisible
         .on("mouseover", function (d) {
+            // Increase the size of the circle when hovered on
+            d3.select(this).attr("r", 8);
             // Show the tooltip for dataset1
             tooltip1.transition().style("opacity", .9);
             updateTooltip(tooltip1, d, xScale, yScale, w, svg, "Arrival Visa");
         })
         .on("mouseout", function () {
+            // Reset the size of the circle when mouseout
+            d3.select(this).attr("r", 5);
             // Hide the tooltip for dataset1
             tooltip1.transition().style("opacity", 0);
         });
@@ -184,11 +196,15 @@ var LineChart = (dataset1, dataset2, category) => {
         .attr("fill", "red")
         .style("opacity", 0) // Initially set to invisible
         .on("mouseover", function (d) {
+            // Increase the size of the circle when hovered on
+            d3.select(this).attr("r", 8);
             // Show the tooltip for dataset2
             tooltip2.transition().style("opacity", .9);
             updateTooltip(tooltip2, d, xScale, yScale, w, svg, "Departure Visa");
         })
         .on("mouseout", function () {
+            // Reset the size of the circle when mouseout
+            d3.select(this).attr("r", 5);
             // Hide the tooltip for dataset2
             tooltip2.transition().style("opacity", 0);
         });
