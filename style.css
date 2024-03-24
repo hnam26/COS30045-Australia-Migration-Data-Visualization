@@ -1,0 +1,66 @@
+/* Flexbox setup for centering content vertically and horizontally */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#chart {
+    margin-top: 0px;
+}
+
+/* Button styles */
+button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: dodgerblue;
+    color: white;
+    transition: ease-in 0.3s;
+    /* Smooth transition effect */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: deepskyblue;
+}
+
+.lineChart {
+    background-color: rgb(235, 56, 56);
+}
+
+.lineChart:hover {
+    background-color: rgba(249, 100, 100);
+}
+
+.line {
+    fill: none;
+    stroke: #2980B9;
+    stroke-width: 1.5;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 120px;
+    height: 30px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+
+/* Styling for the footer */
+footer {
+    width: 100%;
+    /* Set width of the footer */
+}
+
+.line-halfMilMark {
+    stroke: red;
+    stroke-width: 0.5;
+}
