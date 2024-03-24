@@ -56,6 +56,7 @@ var LineChart = (dataset1, dataset2, category) => {
         .datum(dataset1)
         .attr("class", "line")
         .attr("d", line1)
+        .style("stroke", "#2980B9") // Make the line red
         .transition() // Start a transition
         .duration(2000) // Set its duration to 2000 milliseconds
         .attrTween("stroke-dasharray", function () {
@@ -157,7 +158,7 @@ var LineChart = (dataset1, dataset2, category) => {
         .on("mouseover", function (d) {
             // Show the tooltip for dataset1
             tooltip1.transition().style("opacity", .9);
-            updateTooltip(tooltip1, d, xScale, yScale, w, svg);
+            updateTooltip(tooltip1, d, xScale, yScale, w, svg, "Arrival Visa");
         })
         .on("mouseout", function () {
             // Hide the tooltip for dataset1
@@ -185,7 +186,7 @@ var LineChart = (dataset1, dataset2, category) => {
         .on("mouseover", function (d) {
             // Show the tooltip for dataset2
             tooltip2.transition().style("opacity", .9);
-            updateTooltip(tooltip2, d, xScale, yScale, w, svg);
+            updateTooltip(tooltip2, d, xScale, yScale, w, svg, "Departure Visa");
         })
         .on("mouseout", function () {
             // Hide the tooltip for dataset2
@@ -201,22 +202,16 @@ var LineChart = (dataset1, dataset2, category) => {
 
 
     // Function to update tooltip position and value
-    function updateTooltip(tooltip, d, xScale, yScale, w, svg) {
+    function updateTooltip(tooltip, d, xScale, yScale, w, svg, title) {
         tooltip.transition().style("opacity", .9);
-        tooltip.html("Year: " + d.year.getFullYear() + "<br/>" + "Value: " + d[category])
+        html = `<h3>${title}</h3>` + `<p>Year: ${d.year.getFullYear()}</p>` + `<p>Value: ${d[category]}</p>`;
+        tooltip.html(html)
             .style("top", (yScale(d[category]) - 50 + svg.node().getBoundingClientRect().top) + "px");
         if (xScale(d.year) < w / 2) {
             tooltip.style("left", (xScale(d.year) + svg.node().getBoundingClientRect().left + 10) + "px");
         } else {
             tooltip.style("left", (xScale(d.year) + svg.node().getBoundingClientRect().left - 120) + "px");
         }
-    }
-
-    // Function to update tooltip circle position and visibility
-    function updateTooltipCircle(tooltipCircle, d, xScale, yScale) {
-        tooltipCircle.attr("cx", xScale(d.year))
-            .attr("cy", yScale(d[category]))
-            .style("visibility", "visible");
     }
 };
 
