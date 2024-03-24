@@ -14,7 +14,7 @@ var rowConverter = (d) => {
 var LineChart = (dataset1, dataset2, category) => {
     var w = 1000; // Width
     var h = 450; // Height
-    var paddingRight = paddingTop = 50;
+    var paddingRight = paddingTop = 70;
     var axisLeft = 50;
     var axisBot = 100; // Space for bottom axis
     var xScale = d3.scaleTime()
@@ -102,6 +102,7 @@ var LineChart = (dataset1, dataset2, category) => {
             focusLine2(false);
         });
 
+
     // Create x-axis
     const gx = svg.append("g")
         .attr("transform", `translate(0, ${h - axisBot})`)
@@ -120,6 +121,14 @@ var LineChart = (dataset1, dataset2, category) => {
     gy.selectAll("text")
         .attr("dx", "-0.5em") // Adjust the x-offset
         .style("text-anchor", "end");
+
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", axisLeft - 55) // Adjust position to place it next to the y-axis
+        .attr("x", 0 - (h / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Thousands");
 
 
     // Create a group for the legend
