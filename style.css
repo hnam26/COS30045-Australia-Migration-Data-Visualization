@@ -37,6 +37,7 @@ button {
 /* Button hover effect */
 button:hover {
     background-color: deepskyblue;
+    cursor: pointer;
 }
 
 .lineChart {
@@ -75,4 +76,13 @@ footer {
 .line-halfMilMark {
     stroke: red;
     stroke-width: 0.5;
+}
+
+.highlighted {
+    stroke-width: 3px;
+    opacity: 1;
+}
+
+.unhighlighted {
+    opacity: 0.2;
 }
