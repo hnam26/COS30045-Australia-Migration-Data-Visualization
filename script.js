@@ -52,11 +52,31 @@ var LineChart = (dataset1, dataset2, category) => {
         .attr("height", h);
 
     // Create line for dataset1
-    svg.append("path")
+    var lineSet1 = svg.append("path")
         .datum(dataset1)
         .attr("class", "line")
         .attr("d", line1)
-        .style("stroke", "#2980B9") // Make the line red
+        .style("stroke", "#2980B9"); // Make the line blue
+
+    // Add transition
+    lineSet1.transition() // Start a transition
+        .duration(2000) // Set its duration to 2000 milliseconds
+        .attrTween("stroke-dasharray", function () {
+            var len = this.getTotalLength();
+            return function (t) { return (d3.interpolateString("0," + len, len + ",0"))(t); };
+        });
+
+
+
+    // Create line for dataset2
+    var lineSet2 = svg.append("path")
+        .datum(dataset2)
+        .attr("class", "line") // Use a different class for the second line
+        .attr("d", line2)
+        .style("stroke", "red"); // Make the line red
+
+    // Add transition
+    lineSet2
         .transition() // Start a transition
         .duration(2000) // Set its duration to 2000 milliseconds
         .attrTween("stroke-dasharray", function () {
@@ -64,17 +84,22 @@ var LineChart = (dataset1, dataset2, category) => {
             return function (t) { return (d3.interpolateString("0," + len, len + ",0"))(t); };
         });
 
-    // Create line for dataset2
-    svg.append("path")
-        .datum(dataset2)
-        .attr("class", "line") // Use a different class for the second line
-        .attr("d", line2)
-        .style("stroke", "red") // Make the line red
-        .transition() // Start a transition
-        .duration(2000) // Set its duration to 2000 milliseconds
-        .attrTween("stroke-dasharray", function () {
-            var len = this.getTotalLength();
-            return function (t) { return (d3.interpolateString("0," + len, len + ",0"))(t); };
+    // Add mouseover and mouseout events
+    lineSet1
+        .on("mouseover", function () {
+            focusLine1(true);
+        })
+        .on("mouseout", function () {
+            focusLine1(false);
+        });
+
+    // Add mouseover and mouseout events
+    lineSet2
+        .on("mouseover", function () {
+            focusLine2(true);
+        })
+        .on("mouseout", function () {
+            focusLine2(false);
         });
 
     // Create x-axis
@@ -154,16 +179,7 @@ var LineChart = (dataset1, dataset2, category) => {
         .attr("cy", d => yScale(+d[category]))
         .attr("r", 5)
         .attr("fill", "#2980B9")
-        .style("opacity", 0) // Initially set to invisible
-        .on("mouseover", function (d) {
-            // Show the tooltip for dataset1
-            tooltip1.transition().style("opacity", .9);
-            updateTooltip(tooltip1, d, xScale, yScale, w, svg, "Arrival Visa");
-        })
-        .on("mouseout", function () {
-            // Hide the tooltip for dataset1
-            tooltip1.transition().style("opacity", 0);
-        });
+        .style("opacity", 0); // Initially set to invisible
 
     // Transition to make the circles appear with the line
     circles1.transition()
@@ -182,16 +198,7 @@ var LineChart = (dataset1, dataset2, category) => {
         .attr("cy", d => yScale(+d[category]))
         .attr("r", 5)
         .attr("fill", "red")
-        .style("opacity", 0) // Initially set to invisible
-        .on("mouseover", function (d) {
-            // Show the tooltip for dataset2
-            tooltip2.transition().style("opacity", .9);
-            updateTooltip(tooltip2, d, xScale, yScale, w, svg, "Departure Visa");
-        })
-        .on("mouseout", function () {
-            // Hide the tooltip for dataset2
-            tooltip2.transition().style("opacity", 0);
-        });
+        .style("opacity", 0); // Initially set to invisible
 
     // Transition to make the circles appear with the line
     circles2.transition()
@@ -201,6 +208,73 @@ var LineChart = (dataset1, dataset2, category) => {
         .style("opacity", 1); // Make the circles visible
 
 
+    // Create a bisector to find the closest data point on the line for a given x value
+    var bisectDate = d3.bisector(d => d.year).left;
+    svg.on("mousemove", function () {
+        // Get the current mouse position
+        var mouseX = d3.mouse(this)[0] - axisLeft;
+        var mouseY = d3.mouse(this)[1];
+
+        // Convert the mouse x position to a date
+        var mouseDate = xScale.invert(mouseX);
+
+        // Covert the mouse y position to a value
+        var mouseValue = yScale.invert(mouseY);
+        // Use the bisector to find the closest data point on the line
+        var xi = bisectDate(dataset1, mouseDate);
+        var yi = 0;
+        if (Math.abs(mouseValue - dataset1[xi][category]) <= Math.abs(mouseValue - dataset2[xi][category])) {
+            yi = 1;
+        } else {
+            yi = 2;
+        }
+        if (yi === 1) {
+            circles1.attr("r", (d, i) => {
+                if (i === xi) {
+                    return 10;
+                } else {
+                    return 5;
+                }
+            });
+            circles2.attr("r", 5);
+            tooltip1.transition().style("opacity", .9);
+            tooltip2.transition().style("opacity", 0);
+            updateTooltip(tooltip1, dataset1[xi], xScale, yScale, w, svg, "Arrival Visa");
+            focusLine1(true);
+            focusLine2(false);
+        } else {
+            circles1.attr("r", 5);
+            circles2.attr("r", (d, i) => {
+                if (i === xi) {
+                    return 10;
+                } else {
+                    return 5;
+                }
+            });
+            tooltip1.transition().style("opacity", .0);
+            tooltip2.transition().style("opacity", .9);
+            updateTooltip(tooltip2, dataset2[xi], xScale, yScale, w, svg, "Departure Visa");
+            focusLine1(false);
+            focusLine2(true);
+        }
+        if (mouseY < paddingTop || mouseY > h - axisBot) {
+            circles1.attr("r", 5);
+            circles2.attr("r", 5);
+            tooltip1.transition().style("opacity", .0);
+            tooltip2.transition().style("opacity", .0);
+            focusLine1(false);
+            focusLine2(false);
+        }
+
+    })
+        .on("mouseout", () => {
+            circles1.attr("r", 5);
+            circles2.attr("r", 5);
+            tooltip1.transition().style("opacity", .0);
+            tooltip2.transition().style("opacity", .0);
+            focusLine1(false);
+            focusLine2(false);
+        });
     // Function to update tooltip position and value
     function updateTooltip(tooltip, d, xScale, yScale, w, svg, title) {
         tooltip.transition().style("opacity", .9);
@@ -208,9 +282,34 @@ var LineChart = (dataset1, dataset2, category) => {
         tooltip.html(html)
             .style("top", (yScale(d[category]) - 50 + svg.node().getBoundingClientRect().top) + "px");
         if (xScale(d.year) < w / 2) {
-            tooltip.style("left", (xScale(d.year) + svg.node().getBoundingClientRect().left + 10) + "px");
+            tooltip.style("left", (xScale(d.year) + svg.node().getBoundingClientRect().left + 20) + "px");
         } else {
-            tooltip.style("left", (xScale(d.year) + svg.node().getBoundingClientRect().left - 120) + "px");
+            tooltip.style("left", (xScale(d.year) + svg.node().getBoundingClientRect().left - tooltip.node().getBoundingClientRect().width) - 20 + "px");
+        }
+    }
+
+    // 
+    function focusLine1(focus = true) {
+        if (focus) {
+            lineSet1.style("stroke-width", "4");
+            lineSet2.style("stroke", "gray");
+            circles2.style("fill", "gray");
+        } else {
+            lineSet1.style("stroke-width", "2");
+            lineSet2.style("stroke", "red");
+            circles2.style("fill", "red");
+        }
+    }
+
+    function focusLine2(focus = true) {
+        if (focus) {
+            lineSet2.style("stroke-width", "4");
+            lineSet1.style("stroke", "gray");
+            circles1.style("fill", "gray");
+        } else {
+            lineSet2.style("stroke-width", "2");
+            lineSet1.style("stroke", "#2980B9");
+            circles1.style("fill", "#2980B9");
         }
     }
 };
