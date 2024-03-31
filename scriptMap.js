@@ -82,7 +82,7 @@ const init = async () => {
         var minValue = d3.min(data, (d) => convertStringToInt(d['2012-13']));
         var maxValue = d3.max(data, (d) => convertStringToInt(d['2012-13']));
 
-        var colorP = d3.scaleSequential((t) => d3.interpolate('#FFE6E6', '#E72929')(t));
+        var colorP = d3.scaleSequential((t) => d3.interpolate('#FFF', '#E72929')(t));
         if (maxValue >= 0)
             colorP.domain([0, maxValue]);
 
@@ -123,7 +123,7 @@ const init = async () => {
                     .duration(0)
                     .style("fill", (d) => {
                         var value = convertStringToInt(d.properties.value);
-                        if (value) {
+                        if (!isNaN(value)) {
                             if (value >= 0) {
                                 return colorP(value);
                             } else if (value < 0) {
@@ -136,7 +136,10 @@ const init = async () => {
             })
             .style("fill", (d) => {
                 var value = convertStringToInt(d.properties.value);
-                if (value) {
+                if (d.properties.name == "Greenland") {
+                    console.log("greenland", colorP(value), value);
+                }
+                if (!isNaN(value)) {
                     if (value >= 0) {
                         return colorP(value);
                     } else if (value < 0) {
