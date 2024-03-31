@@ -232,10 +232,12 @@ var LineChart = (dataset1, dataset2, category) => {
         // Use the bisector to find the closest data point on the line
         var xi = bisectDate(dataset1, mouseDate);
         var yi = 0;
-        if (Math.abs(mouseValue - dataset1[xi][category]) <= Math.abs(mouseValue - dataset2[xi][category])) {
-            yi = 1;
-        } else {
-            yi = 2;
+        if (0 <= xi && xi < dataset1.length) {
+            if (Math.abs(mouseValue - dataset1[xi][category]) <= Math.abs(mouseValue - dataset2[xi][category])) {
+                yi = 1;
+            } else {
+                yi = 2;
+            }
         }
         if (yi === 1) {
             circles1.attr("r", (d, i) => {
@@ -246,12 +248,12 @@ var LineChart = (dataset1, dataset2, category) => {
                 }
             });
             circles2.attr("r", 5);
-            tooltip1.transition().style("opacity", .9);
-            tooltip2.transition().style("opacity", 0);
+            tooltip1.style("opacity", .9);
+            tooltip2.style("opacity", 0);
             updateTooltip(tooltip1, dataset1[xi], xScale, yScale, w, svg, "Arrival Visa");
             focusLine1(true);
             focusLine2(false);
-        } else {
+        } else if (yi === 2) {
             circles1.attr("r", 5);
             circles2.attr("r", (d, i) => {
                 if (i === xi) {
@@ -260,8 +262,8 @@ var LineChart = (dataset1, dataset2, category) => {
                     return 5;
                 }
             });
-            tooltip1.transition().style("opacity", .0);
-            tooltip2.transition().style("opacity", .9);
+            tooltip1.style("opacity", .0);
+            tooltip2.style("opacity", .9);
             updateTooltip(tooltip2, dataset2[xi], xScale, yScale, w, svg, "Departure Visa");
             focusLine1(false);
             focusLine2(true);
@@ -269,8 +271,8 @@ var LineChart = (dataset1, dataset2, category) => {
         if (mouseY < paddingTop || mouseY > h - axisBot) {
             circles1.attr("r", 5);
             circles2.attr("r", 5);
-            tooltip1.transition().style("opacity", .0);
-            tooltip2.transition().style("opacity", .0);
+            tooltip1.style("opacity", .0);
+            tooltip2.style("opacity", .0);
             focusLine1(false);
             focusLine2(false);
         }
@@ -279,14 +281,14 @@ var LineChart = (dataset1, dataset2, category) => {
         .on("mouseout", () => {
             circles1.attr("r", 5);
             circles2.attr("r", 5);
-            tooltip1.transition().style("opacity", .0);
-            tooltip2.transition().style("opacity", .0);
+            tooltip1.style("opacity", .0);
+            tooltip2.style("opacity", .0);
             focusLine1(false);
             focusLine2(false);
         });
     // Function to update tooltip position and value
     function updateTooltip(tooltip, d, xScale, yScale, w, svg, title) {
-        tooltip.transition().style("opacity", .9);
+        tooltip.style("opacity", .9);
         html = `<h3>${title}</h3>` + `<p>Year: ${d.year.getFullYear()}</p>` + `<p>Value: ${d[category]}</p>`;
         tooltip.html(html)
             .style("top", (yScale(d[category]) - 50 + svg.node().getBoundingClientRect().top) + "px");
