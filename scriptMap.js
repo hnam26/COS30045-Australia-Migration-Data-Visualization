@@ -123,7 +123,7 @@ const init = async () => {
                     .duration(0)
                     .style("fill", (d) => {
                         var value = convertStringToInt(d.properties.value);
-                        if (!isNaN(value)) {
+                        if (value !== null) {
                             if (value >= 0) {
                                 return colorP(value);
                             } else if (value < 0) {
@@ -136,10 +136,7 @@ const init = async () => {
             })
             .style("fill", (d) => {
                 var value = convertStringToInt(d.properties.value);
-                if (d.properties.name == "Greenland") {
-                    console.log("greenland", colorP(value), value);
-                }
-                if (!isNaN(value)) {
+                if (value !== null) {
                     if (value >= 0) {
                         return colorP(value);
                     } else if (value < 0) {
