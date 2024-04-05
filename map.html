@@ -15,7 +15,11 @@
         <div id="chart"></div>
         <!-- Line break -->
         <br>
-
+        <div>
+            <label for="scrollbar">Select Year: <span id="yearValue">2012</span></label>
+            <input type="range" id="scrollbar" min="2012" max="2022" value="2012"
+                oninput="yearValue.value = scrollbar.value">
+        </div>
         <script src="scriptMap.js"></script>
     </body>
 
