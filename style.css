@@ -53,19 +53,6 @@ button:hover {
     stroke-width: 2;
 }
 
-.tooltip {
-    position: absolute;
-    padding: 5px;
-    padding-left: 10px;
-    padding-right: 40px;
-    font: 12px sans-serif;
-    background: rgb(28, 28, 28);
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
-    color: white;
-}
-
 
 /* Styling for the footer */
 footer {
