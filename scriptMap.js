@@ -141,7 +141,6 @@ const drawChart = (year, firstDraw = false) => {
             })
             .attr("d", path)
             .on("mouseover", function (d) {
-                console.log(d);
                 d3.select(this)
                     .transition()
                     .duration(300)
