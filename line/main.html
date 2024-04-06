@@ -1,163 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-  
-  <!-- Load d3.js -->
-  <script src="https://d3js.org/d3.v6.min.js"></script>
-  
-  <style>
-    .tooltip {
-      position: absolute;
-      background-color: white;
-      border: solid 2px;
-      border-radius: 5px;
-      padding: 5px;
-      opacity: 0;
-    }
-  </style>
-  
-</head>
-<body>
-  <!-- Create a div where the graph will take place -->
-  <div id="my_dataviz"></div>
-  
-  <script>
-    var lineChart = (dataset, countries) => {
-      // set the dimensions and margins of the graph
-      const margin = {top: 10, right: 30, bottom: 60, left: 60}, // Increased bottom margin
-      width = 900 - margin.left - margin.right, // Increased width
-      height = 500 - margin.top - margin.bottom;
-      
-      // append the svg object to the body of the page
-      const svg = d3.select("#my_dataviz")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
-      
-      
-      
-      var countriesData = []
-      countries.forEach((country, index) => {
-        
-        var countryData = dataset.filter(function(row) {
-          return row['Country of birth(d)'] === country;
-        })[0];
-        delete countryData['Country of birth(d)'];
-        countriesData.push(countryData);
-      })
-      
-      // console.log(countriesData);
-      // // delete countryData['Country of birth(d)'];
-      
-      var datasetFormatted = Object.keys(countries).map(function(key) {
-        return {
-          name: countries[key],
-          values: Object.entries(countriesData[key]).map(([year, value]) => {
-            return {
-              year: year.replace('-', '-20'),
-              value: +value.replace(/,/g, '')
-            };
-          })
-        }
-      });
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    <style>
+      .tooltip {
+        position: absolute;
+        background-color: white;
+        border: solid 2px;
+        border-radius: 5px;
+        padding: 5px;
+        opacity: 0;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <!-- Create a div where the graph will take place -->
+    <div id="my_dataviz"></div>
+
+    <script>
+      var lineChart = (dataset, countries) => {
+        // set the dimensions and margins of the graph
+        const margin = { top: 10, right: 30, bottom: 60, left: 60 }, // Increased bottom margin
+          width = 900 - margin.left - margin.right, // Increased width
+          height = 500 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#my_dataviz")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+
+        var countriesData = [];
+        countries.forEach((country, index) => {
+
+          var countryData = dataset.filter(function (row) {
+            return row['Country of birth(d)'] === country;
+          })[0];
+          delete countryData['Country of birth(d)'];
+          countriesData.push(countryData);
+        });
+
+        // console.log(countriesData);
+        // // delete countryData['Country of birth(d)'];
+
+        var datasetFormatted = Object.keys(countries).map(function (key) {
+          return {
+            name: countries[key],
+            values: Object.entries(countriesData[key]).map(([year, value]) => {
+              return {
+                year: year.replace('-', '-20'),
+                value: +value.replace(/,/g, '')
+              };
+            })
+          };
+        });
         console.log(datasetFormatted);
-              // Get the maximum and minimum values of the years and values for setting the domain of scales
-      const years = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.year)).slice(1,11));
-      const values = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.value)));
-      console.log(years)
+        // Get the maximum and minimum values of the years and values for setting the domain of scales
+        const years = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.year)).slice(1, 11));
+        const values = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.value)));
+        console.log(years);
 
-      const colors = d3.scaleOrdinal()
-      .domain(countries)
-      .range(d3.schemeCategory10);
-      
-      // Add X axis
-      const x = d3.scaleBand()
-        .domain(years)
-        .range([0, width])
-        .paddingInner(1); // Adjusted x-axis range
-        
-      svg.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
+        const colors = d3.scaleOrdinal()
+          .domain(countries)
+          .range(d3.schemeCategory10);
 
-      // Add Y axis
-      const y = d3.scaleLinear()
-        .domain([d3.min(values) * 2, d3.max(values)])
-        .range([height, 0]);
-      svg.append("g")
-        .call(d3.axisLeft(y));
+        // Add X axis
+        const x = d3.scaleBand()
+          .domain(years)
+          .range([0, width])
+          .paddingInner(1); // Adjusted x-axis range
 
-      // Define line function
-      const line = d3.line()
-        .x(d => x(d.year))
-        .y(d => y(d.value));
+        svg.append("g")
+          .attr("transform", `translate(0, ${height})`)
+          .call(d3.axisBottom(x));
 
-      // Add lines for each country
-      svg.selectAll(".line")
-        .data(datasetFormatted)
-        .enter()
-        .append("path")
-        .attr("class", "line")
-        .attr("d", d => line(d.values))
-        .style("stroke", d => colors(d.name))
-        .style("stroke-width", 3)
-        .style("fill", "none");
+        // Add Y axis
+        const y = d3.scaleLinear()
+          .domain([d3.min(values) * 2, d3.max(values)])
+          .range([height, 0]);
+        svg.append("g")
+          .call(d3.axisLeft(y));
 
-        const mouseover = function(event, d) {
-        Tooltip
-          .style("opacity", 1);
-      }
-      const mousemove = function(event, d) {
-        Tooltip
-          .html(`${d.year}: ${d.value}`)
-          .style("left", `${event.layerX+10}px`)
-          .style("top", `${event.layerY}px`);
-      }
-      const mouseleave = function(event, d) {
-        Tooltip
-          .style("opacity", 0);
-      }
+        // Define line function
+        const line = d3.line()
+          .x(d => x(d.year))
+          .y(d => y(d.value));
 
-      // Add circles for each data point
-      svg.selectAll(".dot")
-        .data(datasetFormatted)
-        .enter()
-        .append("g")
-        .selectAll("circle")
-        .data(d => d.values)
-        .enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("cx", d => x(d.year))
-        .attr("cy", d => y(d.value))
-        .attr("r", 4)
-        .style("stroke", d => colors(d.name))
-        .style("fill", "white")
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
+        // Add lines for each country
+        svg.selectAll(".line")
+          .data(datasetFormatted)
+          .enter()
+          .append("path")
+          .attr("class", "line")
+          .attr("d", d => line(d.values))
+          .style("stroke", d => colors(d.name))
+          .style("stroke-width", 3)
+          .style("fill", "none");
 
-      // Tooltip
-      const Tooltip = d3.select("#my_dataviz")
-        .append("div")
-        .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px");
+        const mouseover = function (event, d) {
+          Tooltip
+            .style("opacity", 1);
+        };
+        const mousemove = function (event, d) {
+          Tooltip
+            .html(`${d.year}: ${d.value}`)
+            .style("left", `${event.layerX + 10}px`)
+            .style("top", `${event.layerY}px`);
+        };
+        const mouseleave = function (event, d) {
+          Tooltip
+            .style("opacity", 0);
+        };
 
-     
-    }
-    
-    d3.csv("../data/net_overseas_migration_12_23_abs.csv").then(function(data) {
-      lineChart(data, ["Argentina", "Colombia", "Brazil"]);
-    });
-  </script>
-</body>
+        // Add circles for each data point
+        svg.selectAll(".dot")
+          .data(datasetFormatted)
+          .enter()
+          .append("g")
+          .selectAll("circle")
+          .data(d => d.values)
+          .enter()
+          .append("circle")
+          .attr("class", "dot")
+          .attr("cx", d => x(d.year))
+          .attr("cy", d => y(d.value))
+          .attr("r", 4)
+          .style("stroke", d => colors(d.name))
+          .style("fill", "white")
+          .on("mouseover", mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseleave", mouseleave);
+
+        // Tooltip
+        const Tooltip = d3.select("#my_dataviz")
+          .append("div")
+          .style("opacity", 0)
+          .attr("class", "tooltip")
+          .style("background-color", "white")
+          .style("border", "solid")
+          .style("border-width", "2px")
+          .style("border-radius", "5px")
+          .style("padding", "5px");
+
+
+      };
+
+      d3.csv("../data/net_overseas_migration_12_23_abs.csv").then(function (data) {
+        lineChart(data, ["South Africa"]);
+      });
+    </script>
+  </body>
+
 </html>
