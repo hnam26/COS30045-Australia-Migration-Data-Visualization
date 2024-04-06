@@ -341,8 +341,8 @@ function loadata(csv) {
 var data = [];
 var data2 = [];
 const init = async () => {
-    data = await loadata('visa_arrival.csv');
-    data2 = await loadata('visa_departure.csv');
+    data = await loadata('data/visa_arrival.csv');
+    data2 = await loadata('data/visa_departure.csv');
     LineChart(dataset1 = data, dataset2 = data2, category = "tem_visa_holder");
 
 };

@@ -8,12 +8,18 @@ body {
     text-align: center;
 }
 
-#chart {
+.groupChart {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0px;
+    justify-content: space-around;
+}
+
+#chart {
+    margin-left: 10px;
+    width: fit-content;
+}
+
+#my_dataviz {
+    width: fit-content;
 }
 
 .buttonGroup {
@@ -72,4 +78,165 @@ footer {
 
 .unhighlighted {
     opacity: 0.2;
+}
+
+.groupSelect {
+    margin-top: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.dropdown {
+    width: 30%;
+    margin: 20px;
+    display: inline-block;
+    position: relative;
+}
+
+.selectItem {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.checkboxes {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    max-height: 0px;
+    overflow-y: auto;
+    margin-top: 10px;
+    width: 80%;
+}
+
+.checkboxes label {
+    display: flex;
+    align-items: center;
+}
+
+.checkboxes label input {
+    margin-right: 5px;
+}
+
+.range {
+    height: 80px;
+    width: 380px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 0 65px 0 45px;
+
+}
+
+.range .sliderValue {
+    position: relative;
+    width: 100%;
+}
+
+.range .sliderValue span {
+    position: absolute;
+    height: 45px;
+    width: 45px;
+    text-align: center;
+    font-weight: 500;
+    top: -40px;
+    transform: translateX(-50%);
+    line-height: 55px;
+    left: 0%;
+    z-index: 2;
+}
+
+.range .sliderValue span::after {
+    position: absolute;
+    content: "";
+    height: 45px;
+    width: 45px;
+    background: #fee6dc;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    border: 3px solid #fff;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    z-index: -1;
+}
+
+.range .field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.range .field .value {
+    position: absolute;
+    font-size: 18px;
+    font-weight: 600;
+    /* color: rgb(254, 221, 212); */
+}
+
+.range .field .value.left {
+    left: -43px;
+}
+
+.range .field .value.right {
+    right: -43px;
+}
+
+.range .field input {
+    -webkit-appearance: none;
+    height: 3px;
+    width: 100%;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+}
+
+.range .field input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    background-color: #fee6dc;
+    /* Change this to your desired color */
+    border-radius: 50%;
+    border: 1px solid #fee6dc;
+    /* Change this to your desired color */
+    cursor: pointer;
+}
+
+.toolTipChart {
+    width: 150px;
+    padding: 20px;
+    max-height: fit-content;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgb(195, 195, 195);
+    position: absolute;
+    visibility: hidden;
+}
+
+#tooltipMap {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.head-title {
+    display: flex;
+    align-items: center;
+}
+
+.head-title h3 {
+    width: 50%;
+    margin-left: 20px;
+}
+
+.head-title span {
+    width: 30%;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: aqua;
 }
