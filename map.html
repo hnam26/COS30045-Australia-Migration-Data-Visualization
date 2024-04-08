@@ -8,13 +8,44 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
-        <link rel="stylesheet" href="style.css">
         <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="styles/style.css">
+        <link rel="stylesheet" href="styles/navbar.css">
+        <link rel="stylesheet" href="styles/footer.css">
 
     </head>
 
     <body>
+        <nav class="navbar">
+            <!-- Swinburne logo -->
+            <div class="navbar-logo">
+                <a href="/">
+                    <img src="images/basic-logo.png" alt="Swinburne logo" />
+                </a>
+            </div>
+
+            <!-- Right-side navigation and menu toggle -->
+            <div class="right-side">
+                <!-- Hamburger menu icon -->
+                <div class="navbar-toggle" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+
+                <!-- Navigation links -->
+                <ul class="navbar-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li>
+                        <button class="sign-in-button">Sign in</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
         <div class="groupSelect">
             <div class="dropdown">
                 <label for="indicator">Indicator</label><br>
@@ -64,7 +95,65 @@
             <p class="value">Value: 1000</p>
             <p class="time">Time: 2012-13</p>
         </div>
-        <script src="scriptMap.js"></script>
+        <footer class="footer">
+            <!-- Upper section of the footer -->
+            <div class='footer-upper'>
+                <!-- Left section with logo and location -->
+                <div class="footer-left">
+                    <div class="footer-img">
+                        <img src="images/full-logo.png" alt="Swinburne logo" />
+                    </div>
+                    <div class="footer-location">
+                        <p><b>Location</b>: Lot 2A September 2th Street, Hai Chau District, Da Nang city</p>
+                    </div>
+                </div>
+
+                <!-- Links section with various categories -->
+                <div class="footer-links">
+                    <div class="footer-link">
+                        <p><b>About</b></p>
+                        <ul>
+                            <li><a href="./">Our company</a></li>
+                            <li><a href="./">Our Policies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link">
+                        <p><b>Contact us</b></p>
+                        <div class="footer-social">
+                            <a href="./">
+                                <i class="fa fa-facebook icon"></i>
+                            </a>
+                            <a href="./">
+                                <i class="fa fa-twitter icon"></i>
+                            </a>
+                            <a href="./">
+                                <i class="fa fa-instagram icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="footer-link">
+                        <p><b>Feedback</b></p>
+                        <ul>
+                            <li><a href="./">Share opinion</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link">
+                        <p><b>Privacy</b></p>
+                        <ul>
+                            <li><a href="./">For buyer</a></li>
+                            <li><a href="./">For seller</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <!-- Copyright section -->
+            <div class="footer-copyright">
+                © Swinburne 2024 | Copyright and disclaimer
+            </div>
+        </footer>
     </body>
+    <script src="scriptMap.js"></script>
 
 </html>

@@ -200,7 +200,6 @@ const drawMap = (year) => {
                 .attr('transform', d3.event.transform);
         });
 
-
     // Define the SVG container
     var svg = d3.select("#chart")
         .append("svg")
@@ -873,3 +872,21 @@ selectElement.onchange = function () {
             break;
     }
 };
+
+var isMenuOpen = false;
+
+function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+    var navbar = document.querySelector('.navbar');
+    var navbarToggle = document.querySelector('.navbar-toggle');
+    var navbarLinks = document.querySelector('.navbar-links');
+    if (isMenuOpen) {
+        navbar.className = 'navbar open';
+        navbarToggle.className = 'navbar-toggle open';
+        navbarLinks.className = 'navbar-links open';
+    } else {
+        navbar.className = 'navbar';
+        navbarToggle.className = 'navbar-toggle';
+        navbarLinks.className = 'navbar-links';
+    }
+}

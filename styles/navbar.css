@@ -1,0 +1,159 @@
+/* Default styles for the navbar container */
+.navbar {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 10px;
+    background-color: #fff;
+    border-bottom: #d6d6d6 1px solid;
+    position: relative;
+}
+
+/* Styles for the logo within the navbar */
+.navbar-logo img {
+    width: 50px;
+    margin-left: 2em;
+    height: 50px;
+}
+
+/* Styles for the right side of the navbar */
+.right-side {
+    display: flex;
+    align-items: center;
+}
+
+/* Styles for the navbar links container */
+.navbar-links {
+    display: flex;
+    list-style-type: none;
+    transform-origin: top;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Styles for individual navbar links */
+.navbar-links li {
+    margin-right: 2em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    transition: 0.4s ease-out;
+}
+
+/* Hover effect for last navbar link */
+.navbar-links li:last-child:hover {
+    border-bottom: 1px solid transparent;
+}
+
+/* Hover effect for navbar links */
+.navbar-links li:hover {
+    border-bottom: #ed1c2e 1px solid;
+}
+
+/* Styles for anchor links within navbar links */
+.navbar-links li a {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Styles for the sign-in button */
+.sign-in-button {
+    background-color: #ed1c2e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.4s ease-out;
+    border: 1px solid transparent;
+}
+
+/* Hover effect for the sign-in button */
+.sign-in-button:hover {
+    background-color: #fff;
+    color: #ed1c2e;
+    border: #ed1c2e 1px solid;
+}
+
+
+/* Responsive Styles for Navbar */
+@media (max-width: 768px) {
+
+    /* Styles for navbar links in mobile view */
+    .navbar-links {
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #fff;
+        border-top: 1px solid #d6d6d6;
+        z-index: 1000;
+        width: 100%;
+        text-align: center;
+        transform: scaleY(0);
+    }
+
+    /* Styles for individual navbar links in mobile view */
+    .navbar-links li {
+        margin: 0;
+        padding: 10px;
+    }
+
+    /* Styles for navbar links on hover in mobile view */
+    .navbar-links li:hover {
+        border-bottom: 1px solid transparent;
+    }
+
+    /* Styles for open navbar links in mobile view */
+    .navbar.open .navbar-links {
+        transform: scaleY(1);
+    }
+
+    /* Styles for navbar toggle button in mobile view */
+    .navbar-toggle {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+
+    /* Styles for individual bars in navbar toggle button */
+    .navbar-toggle .bar {
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 4px 0;
+        transition: 0.4s;
+    }
+
+    /* Styles for rotated bar in navbar toggle button when open */
+    .navbar-toggle.open .bar:nth-child(1) {
+        transform: rotate(-45deg) translate(-8px, 10px);
+    }
+
+    /* Styles for hidden middle bar in navbar toggle button when open */
+    .navbar-toggle.open .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    /* Styles for rotated bar in navbar toggle button when open */
+    .navbar-toggle.open .bar:nth-child(3) {
+        transform: rotate(45deg) translate(-6px, -8px);
+    }
+
+    /* Additional styles for the sign-in button in the dropdown */
+    .navbar-links li button.sign-in-button {
+        width: 80%;
+    }
+}
