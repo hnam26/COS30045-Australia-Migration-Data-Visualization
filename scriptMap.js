@@ -9,7 +9,7 @@ function loadData(csv) {
             });
     });
 }
-function convertStringToInt(str) {
+function convertStringToNumber(str) {
     if (str) {
         let noCommas = str.replace(/,/g, '');
         let num = Number(noCommas);
@@ -19,12 +19,42 @@ function convertStringToInt(str) {
             return num;
         }
     }
-    else return null;
+    else return undefined;
 }
 function formatName(str) {
     return str.replace(/[^a-zA-Z0-9]/g, '-');
 }
 
+function getTop(data, year = 2012) {
+    year = Number(year);
+    var yearStr = String(year);
+    // Get the last two digits of the next year
+    var nextYearStr = String(year + 1).slice(-2);
+    // Combine the strings
+    var time = yearStr + '-' + nextYearStr;
+
+    var sortedData = data.sort((a, b) => {
+        var aValue = a[time] !== undefined && a[time].includes(',') ? Number(a[time].replace(/,/g, '')) : a[time];
+        var bValue = b[time] !== undefined && b[time].includes(',') ? Number(b[time].replace(/,/g, '')) : b[time];
+        return (bValue || 0) - (aValue || 0);
+    });
+
+    sortedData = sortedData.slice(0, 10);
+    var dataset = [];
+    sortedData.forEach(d => {
+        if (d[time] !== undefined) {
+            dataset.push(
+                {
+                    country: d.country,
+                    value: d[time].includes(',') ? Number(d[time].replace(/,/g, '')) : d[time]
+                }
+            );
+        }
+    });
+    return dataset;
+
+
+}
 
 
 function filterCheckboxes() {
@@ -43,29 +73,7 @@ function filterCheckboxes() {
     }
 }
 
-d3.select("#buttonArrow")
-    .on("click", () => {
-        document.getElementById("#");
-        d3.select("#geographic-scope")
-            .style("max-height",);
-    });
 
-var isMouseOut = true;
-var search = document.getElementById("search");
-var searchParent = search.parentNode;
-search.addEventListener("click", () => {
-    d3.select("#geographic-scope")
-        .style("max-height", "120px");
-});
-// When the document is clicked
-document.addEventListener('click', function (event) {
-    // If the click was outside the dropdown and the dropdown is open
-    if (!searchParent.contains(event.target) && d3.select("#geographic-scope").style("height") !== "0px") {
-        // Close the dropdown
-        d3.select("#geographic-scope")
-            .style("max-height", "0px");
-    }
-});
 
 
 
@@ -77,7 +85,6 @@ document.addEventListener('click', function (event) {
 var countries = null;
 var data = null;
 var features = null;
-var countriesSelected = [];
 var colorP, colorN;
 
 // Get all checkboxes
@@ -87,25 +94,95 @@ class CountrySet {
     constructor () {
         this.selected = [];
         this.data;
+        this.countries = [];
+        this.features = [];
+        this.titles = {
+            title: "Migration",
+            unit: "people"
+        };
     }
+
+    setTitles(titles) {
+        this.titles = titles;
+    }
+
+    setFeatures(features) {
+        this.features = features;
+    }
+
+    setCountries(countries) {
+        this.countries = countries;
+    }
+
     setData(data) {
         this.data = data;
     }
+
     isHavingCountry(country) {
         return (this.selected.includes(country));
     }
+
     add(country) {
         this.selected.push(country);
+        this.updateCheckBox();
         this.draw();
     }
+
     remove(country) {
         var index = this.selected.indexOf(country);
         this.selected.splice(index, 1);
+        this.deleteCountryMap(country);
+        this.updateCheckBox();
         this.draw();
+        this.deleteBar(country);
     }
-    draw() {
+
+    drawLine() {
         lineChart(this.data, this.selected);
     }
+
+    drawCountryMap() {
+        this.selected.forEach(c => {
+            d3.select(`.map .${formatName(this.countries[c])}`)
+                .style("fill", "orange");
+        });
+    }
+
+    draw() {
+        this.drawLine();
+        this.drawCountryMap();
+        this.drawBar();
+    }
+
+    drawBar() {
+        this.selected.forEach(c => {
+            d3.select(`.bar-${formatName(this.countries[c])}`)
+                .style("fill", "orange");
+        });
+    }
+
+    deleteBar(country) {
+        var color = d3.select(`.map .${formatName(countries[country])}`).attr("color");
+        d3.select(`.bar-${formatName(this.countries[country])}`)
+            .style("fill", color);
+    }
+
+    deleteCountryMap(country) {
+        var color = d3.select(`.map .${formatName(this.countries[country])}`).attr('color');
+        d3.select(`.map .${formatName(this.countries[country])}`).style("fill", color);
+    }
+
+    updateCheckBox() {
+        for (let i = 0; i < this.features.length; i++) {
+            if (this.isHavingCountry(countries[this.features[i].properties.name])) {
+                document.getElementById('checkbox' + i).checked = true;
+            }
+            else {
+                if (document.getElementById('checkbox' + i) !== null) document.getElementById('checkbox' + i).checked = false;
+            }
+        }
+    }
+
     reset() {
         this.selected = [];
     }
@@ -125,10 +202,10 @@ const init = async (csv, title) => {
         }, {});
 
         data = await loadData(csv);
+        // console.log(csv, data);
         Country.setData(data);
-        console.log(data);
+        Country.setCountries(countries);
 
-        features = json.features;
 
         var container = document.getElementById('geographic-scope');
         d3.select("#geographic-scope").html("");
@@ -147,13 +224,14 @@ const init = async (csv, title) => {
 
                     checkbox.addEventListener('change', function () {
                         if (this.checked) {
+
                             d3.select(`.map .${formatName(countries[this.value])}`)
                                 .style("fill", "orange");
                             Country.add(this.value);
 
                         } else {
                             var color = d3.select(`.map .${formatName(countries[this.value])}`).attr("color");
-                            d3.select(`path.map.${formatName(this.value)}`).style("fill", color);
+                            d3.select(`.map .${formatName(countries[this.value])}`).style("fill", color);
                             Country.remove(this.value);
                         }
                     });
@@ -169,18 +247,21 @@ const init = async (csv, title) => {
                 }
             }
         }
-        drawMap(2012);
+        features = json.features;
+        Country.setFeatures(features);
+        drawMap(inputSlider.value);
+        barChart(getTop(data, inputSlider.value));
         Country.draw();
     });
 };
 
+var colorP, colorN;
 
-
-const drawMap = (year) => {
+const drawMap = (year, title) => {
     d3.select("#chart svg").remove();
     // Define width and height for the SVG container
-    var w = 600; // Width
-    var h = 400; // Height
+    var w = 800; // Width
+    var h = 500; // Height
     var rightMargin = 100;
     var bottomMargin = 100;
     // Define the projection for the map
@@ -216,25 +297,24 @@ const drawMap = (year) => {
 
     // Combine the strings
     var time = yearStr + '-' + nextYearStr;
-
     // Filter data to get only positive values
-    var positiveData = data.filter((d) => convertStringToInt(d[time]) >= 0);
+    var positiveData = data.filter((d) => convertStringToNumber(d[time]) >= 0);
     // Filter data to get only negative values
-    var negativeData = data.filter((d) => convertStringToInt(d[time]) < 0);
+    var negativeData = data.filter((d) => convertStringToNumber(d[time]) < 0);
 
     // Find the min, max positive value
-    var minPositiveValue = d3.min(positiveData, (d) => convertStringToInt(d[time]));
-    var maxPositiveValue = d3.max(positiveData, (d) => convertStringToInt(d[time]));
+    var minPositiveValue = d3.min(positiveData, (d) => convertStringToNumber(d[time]));
+    var maxPositiveValue = d3.max(positiveData, (d) => convertStringToNumber(d[time]));
 
     // Find the min, max negative value
-    var minNegativeValue = d3.min(negativeData, (d) => convertStringToInt(d[time]));
-    var maxNegativeValue = d3.max(negativeData, (d) => convertStringToInt(d[time]));
+    var minNegativeValue = d3.min(negativeData, (d) => convertStringToNumber(d[time]));
+    var maxNegativeValue = d3.max(negativeData, (d) => convertStringToNumber(d[time]));
 
-    var colorP = d3.scaleSequential((t) => d3.interpolate('#fee6dc', '#fd3a38')(t));
+    colorP = d3.scaleSequential((t) => d3.interpolate('#fee6dc', '#fd3a38')(t));
     if (maxPositiveValue)
         colorP.domain([minPositiveValue, maxPositiveValue]);
 
-    var colorN = d3.scaleSequential((t) => d3.interpolate('#C1EFFF', '#1473e6')(t));
+    colorN = d3.scaleSequential((t) => d3.interpolate('#C1EFFF', '#1473e6')(t));
     if (minNegativeValue)
         colorN.domain([-maxNegativeValue, -minNegativeValue]);
 
@@ -264,8 +344,8 @@ const drawMap = (year) => {
                     .transition()
                     .duration(0)
                     .style("fill", (d) => {
-                        var value = convertStringToInt(d.properties.data ? d.properties.data[time] : null);
-                        if (value !== null) {
+                        var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
+                        if (value !== undefined) {
                             if (value >= 0) {
                                 return colorP(value);
                             } else if (value < 0) {
@@ -276,19 +356,14 @@ const drawMap = (year) => {
                         }
                     });
                 Country.remove(country);
-                // Check the checkbox
-                document.getElementById('checkbox' + i).checked = false;
-            } else if (country !== null) {
+            } else if (country !== undefined) {
                 d3.select(this)
                     .transition()
                     .duration(300)
                     .style("fill", (d) => {
-                        var value = convertStringToInt(d.properties.data ? d.properties.data[time] : null);
+                        var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
                         if (value !== null) {
                             Country.add(country);
-                            // Check the checkbox
-                            document.getElementById('checkbox' + i).checked = true;
-
                             return "orange";
                         } else {
                             return "#eee";
@@ -302,7 +377,7 @@ const drawMap = (year) => {
                 .transition()
                 .duration(300)
                 .style("fill", "orange");
-            var value = convertStringToInt(d.properties.data ? d.properties.data[time] : null);
+            var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
             showToolTip(value);
             tooltipMap.style("visibility", "visible");
         })
@@ -316,8 +391,8 @@ const drawMap = (year) => {
                     .transition()
                     .duration(0)
                     .style("fill", (d) => {
-                        var value = convertStringToInt(d.properties.data ? d.properties.data[time] : null);
-                        if (value !== null) {
+                        var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
+                        if (value !== undefined) {
                             if (value >= 0) {
                                 return colorP(value);
                             } else if (value < 0) {
@@ -332,15 +407,17 @@ const drawMap = (year) => {
             tooltipMap.style("visibility", "hidden");
         })
         .on("mousemove", function (d) {
-            d3.select('.head-title h3')
+            d3.select('#tooltipMap .head-title h3')
                 .text(`${d.properties.name}`);
-            d3.select('.head-title span')
+            d3.select('#tooltipMap .head-title span')
                 .style("background", () => {
                     var color = d3.select(`path.map.${formatName(d.properties.name)}`).attr("color");
                     return color;
                 });
+            var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
+            value = Math.round(value);
             tooltipMap.select("p")
-                .text(`Value: ${d.properties.data ? d.properties.data[time] : ''}`);
+                .text(`${Country.titles.title}: ${isNaN(value) ? "" : value} ${Country.titles.unit}`);
             tooltipMap.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
         })
         .attr("color", (d) => {
@@ -348,8 +425,8 @@ const drawMap = (year) => {
             var color;
             for (let key in countries) {
                 if (countries[key] === d.properties.name) country = key;
-                var value = convertStringToInt(d.properties.data ? d.properties.data[time] : null);
-                if (value !== null) {
+                var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
+                if (value !== undefined) {
                     if (value >= 0) {
                         color = colorP(value);
                     } else if (value < 0) {
@@ -368,8 +445,8 @@ const drawMap = (year) => {
                 if (countries[key] === d.properties.name) country = key;
             }
             if (!Country.isHavingCountry(country)) {
-                var value = convertStringToInt(d.properties.data ? d.properties.data[time] : null);
-                if (value !== null) {
+                var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
+                if (value !== undefined) {
                     if (value >= 0) {
                         color = colorP(value);
                     } else if (value < 0) {
@@ -443,17 +520,12 @@ const drawMap = (year) => {
         .style("fill", "url(#gradientP)");
 
 
-    legend.append("rect")
-        .attr("x", 10)
-        .attr("y", 30)
-        .attr("width", 150)
-        .attr("height", 10)
-        .style("fill", "url(#gradientN)");
+
 
     var minPositiveText = legend.append("text")
         .attr("x", 10)  // Position at the left of the first rectangle
         .attr("y", 15)  // Align with the first rectangle
-        .text(minPositiveValue)
+        .text(Math.round(minPositiveValue))
         .style("alignment-baseline", "middle");
 
     var minPositiveTextWidth = minPositiveText.node().getBBox().width;
@@ -463,7 +535,7 @@ const drawMap = (year) => {
     var maxPositiveText = legend.append("text")
         .attr("x", 160)  // Position at the right of the first rectangle
         .attr("y", 15)  // Align with the first rectangle
-        .text(maxPositiveValue)
+        .text(Math.round(maxPositiveValue))
         .style("alignment-baseline", "middle");
 
     var maxPositiveTextWidth = maxPositiveText.node().getBBox().width;
@@ -471,25 +543,35 @@ const drawMap = (year) => {
     maxPositiveText.attr("x", 160 + 5);  // Adjust the position
 
     // Add min and max negative values for the second rectangle
-    var maxNegativeText = legend.append("text")
-        .attr("x", 10)  // Position at the left of the second rectangle
-        .attr("y", 35)  // Align with the second rectangle
-        .text(maxNegativeValue)
-        .style("alignment-baseline", "middle");
+    if (!isNaN(minNegativeValue)) {
+        legend.append("rect")
+            .attr("x", 10)
+            .attr("y", 30)
+            .attr("width", 150)
+            .attr("height", 10)
+            .style("fill", "url(#gradientN)");
 
-    var maxNegativeTextWidth = maxNegativeText.node().getBBox().width;
 
-    maxNegativeText.attr("x", 10 - maxNegativeTextWidth - 5);  // Adjust the position
+        var maxNegativeText = legend.append("text")
+            .attr("x", 10)  // Position at the left of the second rectangle
+            .attr("y", 35)  // Align with the second rectangle
+            .text(Math.round(maxNegativeValue))
+            .style("alignment-baseline", "middle");
 
-    var minNegativeText = legend.append("text")
-        .attr("x", 160)  // Position at the right of the second rectangle
-        .attr("y", 35)  // Align with the second rectangle
-        .text(minNegativeValue)
-        .style("alignment-baseline", "middle");
+        var maxNegativeTextWidth = maxNegativeText.node().getBBox().width;
 
-    var minNegativeTextWidth = minNegativeText.node().getBBox().width;
+        maxNegativeText.attr("x", 10 - maxNegativeTextWidth - 5);  // Adjust the position
 
-    minNegativeText.attr("x", 160 + 5);  // Adjust the position
+        var minNegativeText = legend.append("text")
+            .attr("x", 160)  // Position at the right of the second rectangle
+            .attr("y", 35)  // Align with the second rectangle
+            .text(Math.round(minNegativeValue))
+            .style("alignment-baseline", "middle");
+
+
+        minNegativeText.attr("x", 160 + 5);  // Adjust the position
+    }
+
 
     d3.selectAll(".tooltip").remove();
 
@@ -549,7 +631,7 @@ const drawMap = (year) => {
                 .style("opacity", 1);
             text1
                 .attr("x", x)
-                .text(value)
+                .text(Math.round(value))
                 .style("opacity", 1);
         } else if (value < 0) {
             // console.log("value < 0");
@@ -559,7 +641,7 @@ const drawMap = (year) => {
                 .style("opacity", 1);
             text2
                 .attr("x", x)
-                .text(value)
+                .text(Math.round(value))
                 .style("opacity", 1);
         }
     };
@@ -580,11 +662,11 @@ const drawMap = (year) => {
 
 // ----------Line
 
-var lineChart = (dataset, countries) => {
-    console.log("countries: ", countries);
+var lineChart = (dataset, countriesSelected) => {
+    // console.log("countries: ", countries);
     // set the dimensions and margins of the graph
     const margin = { top: 10, right: 30, bottom: 100, left: 60 }, // Increased bottom margin
-        width = 800 - margin.left - margin.right, // Increased width
+        width = 700 - margin.left - margin.right, // Increased width
         height = 500 - margin.top - margin.bottom;
 
     d3.select("#my_dataviz svg").remove();
@@ -600,9 +682,8 @@ var lineChart = (dataset, countries) => {
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
 
-
     var countriesData = [];
-    countries.forEach((country, index) => {
+    countriesSelected.forEach((country, index) => {
 
         var countryData = dataset.find(function (row) {
             return row['country'] === country;
@@ -618,9 +699,9 @@ var lineChart = (dataset, countries) => {
 
     // // delete countryData['country'];
 
-    var datasetFormatted = Object.keys(countries).map(function (key) {
+    var datasetFormatted = Object.keys(countriesSelected).map(function (key) {
         return {
-            name: countries[key],
+            name: countriesSelected[key],
             values: Object.entries(countriesData[key]).map(([year, value]) => {
                 return {
                     year: year.replace('-', '-20'),
@@ -629,14 +710,14 @@ var lineChart = (dataset, countries) => {
             })
         };
     });
-    console.log(datasetFormatted);
+    // console.log(datasetFormatted);
     // Get the maximum and minimum values of the years and values for setting the domain of scales
     // const years = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.year)).slice(1, 11));
     const years = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.year)));
 
     const values = [].concat.apply([], datasetFormatted.map(d => d.values.map(v => v.value)));
     const colors = d3.scaleOrdinal()
-        .domain(countries)
+        .domain(countriesSelected)
         .range(d3.schemeCategory10);
 
     // Add X axis
@@ -697,8 +778,6 @@ var lineChart = (dataset, countries) => {
             .attr("r", 5)
             .style("opacity", 0) // Initially set to invisible
             .style("fill", colors(data.name));
-        // .on("mouseover", mouseover)
-        // .on("mousemove", mousemove);
         circles.transition()
             .delay((d, j) => {
                 return j * (2000 / (data.values.length));
@@ -711,7 +790,7 @@ var lineChart = (dataset, countries) => {
         .attr("class", "line-legend");
 
     // Create a group for each data item
-    countries.forEach((country, i) => {
+    countriesSelected.forEach((country, i) => {
         var yPosition = Math.floor(i / 5);
         var xPosition = i % 5;
         var legendGroup = legend.append("g")
@@ -758,8 +837,13 @@ var lineChart = (dataset, countries) => {
         tooltipLine.select('.head-title h3')
             .text(`${name}`);
 
+        d3.select('#tooltipLine .head-title span')
+            .style("background", () => {
+                var color = d3.select(`path.map.${formatName(countries[name])}`).attr("color");
+                return color;
+            });
         tooltipLine.select('.value')
-            .text(`Value: ${d.value}`);
+            .text(`${Country.titles.title}: ${Math.round(d.value)} ${Country.titles.unit}`);
 
         tooltipLine.select('.time')
             .text(`Time: ${d.year}`);
@@ -814,11 +898,13 @@ var lineChart = (dataset, countries) => {
             if (circle !== undefined) {
                 // Get the position of the circle
                 let position = circle.getBoundingClientRect();
-
-                let xPosition = i <= Math.floor(bands.length / 2) ? position.x + 70 : position.x - 70 - 150;
-                let yPosition = position.y - 40;
+                let svgOffset = d3.select("#my_dataviz").node().getBoundingClientRect();
                 let d = datasetFormatted[closestLineIndex].values[i];
                 let name = datasetFormatted[closestLineIndex].name;
+
+                let xPosition = i <= Math.floor(bands.length / 2) ? position.x + 50 : position.x - 50 - 200;
+                // let yPosition = position.y - svgOffset.top - 50;
+                let yPosition = y(d.value) < Math.floor(height / 2) ? position.y - 50 - svgOffset.top : position.y - svgOffset.top - 150;
                 // Call the mousemove function with the position of the circle
                 mousemove(xPosition, yPosition, d, name);
             }
@@ -840,6 +926,200 @@ var lineChart = (dataset, countries) => {
 
 };
 
+// ----------Bar 
+var barChart = (data, update = false) => {
+    // set the dimensions and margins of the graph
+    var margin = { top: 20, right: 30, bottom: 40, left: 90 },
+        width = 500 - margin.left - margin.right,
+        height = 550 - margin.top - margin.bottom;
+    if (update) {
+        var svg = d3.select("#barChart");
+        // Add X axis
+        var x = d3.scaleLinear()
+            .domain([
+                0,
+                data[0].value
+            ])
+            .range([0, width]);
+
+        svg.select(".xBarAxis")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .style("text-anchor", "end");
+
+        // Y axis
+        var y = d3.scaleBand()
+            .range([0, height])
+            .domain(data.map(function (d) { return d.country; }))
+            .padding(.1);
+        svg.select(".yBarAxis")
+            .call(d3.axisLeft(y));
+
+
+        var rects = svg.selectAll("rect")
+            .data(data)
+            .attr('class', d => `bar-${formatName(countries[d.country])}`)
+            .transition() // start a transition
+            .delay(function (d, i) {
+                return i / data.length * 500;
+            })
+            .duration(1000) // for a duration of 1 second
+            .attr("x", 0)
+            .attr("y", function (d) {
+                return y(d.country);
+            })
+            .attr("width", function (d) { return x(d.value); })
+            .attr("height", y.bandwidth())
+            .style("fill", d => {
+                if (!Country.isHavingCountry(d.country)) {
+                    var color = d3.select(`path.map.${formatName(countries[d.country])}`).attr("color");
+                    return color;
+                } else {
+                    return "orange";
+                }
+            });
+
+        var labels = svg.selectAll(".label")
+            .data(data)
+            .transition() // start a transition
+            .attr("y", function (d) { return y(d.country) + y.bandwidth() / 2 + 5; })
+            .style('text-anchor', 'end')
+            .style('text-align', 'center')
+            .style('fill', 'white')
+            .transition() // start a transition
+            .delay(function (d, i) {
+                return i / data.length * 500;
+            })
+            .duration(1000) // for a duration of 1 second
+            .attr("x", function (d) {
+                return x(d.value) - 5;
+            })
+            .text(function (d) { return Math.round(d.value); });
+        return;
+    }
+
+    d3.select("#barChart").html("");
+    // append the svg object to the body of the page
+    var svg = d3.select("#barChart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+    // Add X axis
+    var x = d3.scaleLinear()
+        .domain([
+            0,
+            data[0].value
+        ])
+        .range([0, width]);
+    svg.append("g")
+        .attr("class", "xBarAxis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "translate(-10,0)rotate(-45)")
+        .style("text-anchor", "end");
+
+    // Y axis
+    var y = d3.scaleBand()
+        .range([0, height])
+        .domain(data.map(function (d) { return d.country; }))
+        .padding(.1);
+    svg.append("g")
+        .attr("class", "yBarAxis")
+        .call(d3.axisLeft(y));
+
+    //Bars
+    svg.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr('class', d => `bar-${formatName(countries[d.country])}`)
+        .attr("x", 0)
+        .attr("y", function (d) { return y(d.country); })
+        .attr("height", y.bandwidth())
+        .style("fill", d => {
+            var color = d3.select(`.map .${formatName(countries[d.country])}`).attr("color");
+            return color;
+        })
+        .on("mouseover", function (d) {
+            d3.select(this).style("fill", "orange");
+        })
+        .on("mouseout", function (d) {
+            if (!Country.isHavingCountry(d.country)) {
+                d3.select(this).style("fill", d => {
+                    var color = d3.select(`.map .${formatName(countries[d.country])}`).attr("color");
+                    return color;
+                });
+            }
+        })
+        .on("click", function (d) {
+            d3.select(this).style("fill", "orange");
+            if (!Country.isHavingCountry(d.country)) {
+                Country.add(d.country);
+            } else {
+                Country.remove(d.country);
+            }
+
+        })
+        .transition() // start a transition
+        .delay(function (d, i) {
+            return i / data.length * 500;
+        })
+        .duration(1000) // for a duration of 1 second
+        .attr("width", function (d) { return x(d.value); });
+
+    //Text
+    svg.selectAll(".label")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("y", function (d) { return y(d.country) + y.bandwidth() / 2 + 5; })
+        .style('text-anchor', 'end')
+        .style('text-align', 'center')
+        .style('fill', 'white')
+        .on("mouseover", function (d, i) {
+            svg.selectAll("rect").filter(function (d, j) {
+                return i === j;
+            })
+                .style("fill", "orange");
+        })
+        .on("mouseout", function (d, i) {
+            svg.selectAll("rect").filter(function (d, j) {
+                return i === j;
+            })
+                .style("fill", d => {
+                    if (!Country.isHavingCountry(d.country)) {
+                        var color = d3.select(`.map .${formatName(countries[d.country])}`).attr("color");
+                        return color;
+                    }
+                });
+        })
+        .on("click", function (d) {
+            if (!Country.isHavingCountry(d.country)) {
+                Country.add(d.country);
+            } else {
+                Country.remove(d.country);
+            }
+        })
+        .transition() // start a transition
+        .delay(function (d, i) {
+            return i / data.length * 500;
+        })
+        .duration(1000) // for a duration of 1 second
+        .attr("x", function (d) {
+            return x(d.value) - 10;
+        })
+        .text(function (d) { return Math.round(d.value); });
+
+};
+
+
+
 
 // Call the initialization function
 init('data/net_overseas_migration_12_23_abs.csv');
@@ -847,11 +1127,12 @@ init('data/net_overseas_migration_12_23_abs.csv');
 const slideValue = document.querySelector('.sliderValue span');
 const inputSlider = document.querySelector('.field input');
 inputSlider.oninput = () => {
+    let min = inputSlider.min;
+    let max = inputSlider.max;
     let value = inputSlider.value;
     slideValue.textContent = value;
-    let min = inputSlider.min || 0;
-    let max = inputSlider.max || 100;
     drawMap(value);
+    barChart(getTop(data, value), update = true);
     // Calculate the left position based on the min and max values
     slideValue.style.left = `calc(${((value - min) / (max - min)) * 100}%)`;
 };
@@ -859,15 +1140,51 @@ const selectElement = document.querySelector('.selectItem');
 
 selectElement.onchange = function () {
     const selectedValue = this.value;
-    console.log(selectedValue);
     switch (selectedValue) {
         case '1':
+            Country.setTitles(
+                {
+                    title: 'Migration',
+                    unit: 'people'
+                }
+            );
+            inputSlider.min = 2012;
+            d3.select('.value .left')
+                .text('2012');
+            slideValue.style.left = `calc(${((inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min)) * 100}%)`;
             init('data/net_overseas_migration_12_23_abs.csv', "oversea migration");
             Country.reset();
             break;
         case '2':
+            Country.setTitles(
+                {
+                    title: 'GDP',
+                    unit: 'USD'
+                }
+            );
+            inputSlider.min = 2012;
+            d3.select('.field .left')
+                .text('2012');
+            slideValue.style.left = `calc(${((inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min)) * 100}%)`;
             init('data/gdp.csv', "gdp");
             Country.reset();
+            break;
+        case '3':
+            Country.setTitles(
+                {
+                    title: 'Death',
+                    unit: 'people'
+                }
+            );
+            inputSlider.min = 2019;
+            inputSlider.value = 2019;
+            d3.select('.field .left')
+                .text('2019');
+            slideValue.textContent = 2019;
+            slideValue.style.left = `calc(0%)`;
+            init('data/covid_casualty.csv', "covid_casualty");
+            Country.reset();
+            break;
         default:
             break;
     }
@@ -890,3 +1207,21 @@ function toggleMenu() {
         navbarLinks.className = 'navbar-links';
     }
 }
+
+
+var isMouseOut = true;
+var search = document.getElementById("search");
+var searchParent = search.parentNode;
+search.addEventListener("click", () => {
+    d3.select("#geographic-scope")
+        .style("max-height", "120px");
+});
+// When the document is clicked
+document.addEventListener('click', function (event) {
+    // If the click was outside the dropdown and the dropdown is open
+    if (!searchParent.contains(event.target) && d3.select("#geographic-scope").style("height") !== "0px") {
+        // Close the dropdown
+        d3.select("#geographic-scope")
+            .style("max-height", "0px");
+    }
+});

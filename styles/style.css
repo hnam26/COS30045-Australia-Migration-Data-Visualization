@@ -30,18 +30,27 @@ body {
 
 .groupChart {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 #chart {
-    margin-left: 10px;
+    display: flex;
+    align-items: center;
     width: fit-content;
 }
 
 #my_dataviz {
-    width: fit-content;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+#barChart {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+}
 
 .groupSelect {
     margin-top: 50px;
@@ -172,14 +181,14 @@ body {
 }
 
 .toolTipChart {
+    position: absolute;
     left: 0;
     top: 0;
-    width: 150px;
+    width: 200px;
     padding: 20px;
     max-height: fit-content;
     background-color: rgba(255, 255, 255, 0.9);
     border: 2px solid rgb(195, 195, 195);
-    position: absolute;
     visibility: hidden;
 }
 
@@ -188,7 +197,7 @@ body {
 }
 
 #tooltipLine {
-    padding: 10px;
+    padding: 5px 10px 3px 10px;
 }
 
 .head-title {
