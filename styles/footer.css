@@ -1,0 +1,143 @@
+/* Styles for the footer container */
+.footer {
+    background-color: #000;
+    color: #fff;
+    width: 100%;
+    padding: 2rem 0 0 0;
+    font-weight: lighter;
+    font-size: .8em;
+}
+
+/* Styles for the upper part of the footer */
+.footer-upper {
+    display: flex;
+    align-items: center;
+}
+
+/* Styles for the left section of the footer */
+.footer-left {
+    margin: 0 2em;
+}
+
+/* Styles for the footer image */
+.footer-img img {
+    width: 20%;
+    height: 20;
+}
+
+/* Styles for the links section of the footer */
+.footer-links {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 0 18em;
+}
+
+/* Styles for individual footer links */
+.footer-link {
+    margin: 0 1rem;
+    cursor: pointer;
+}
+
+/* Styles for text within footer links */
+.footer-link p {
+    margin: 0;
+}
+
+/* Styles for the unordered list in the footer */
+.footer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Styles for list items in the footer */
+.footer ul li {
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+
+/* Styles for anchor links and icons in the footer */
+.footer ul a,
+.footer .icon {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Styles for the social icons in the footer */
+.footer .icon {
+    margin: 1rem 0 0;
+    font-size: 1.2em;
+}
+
+/* Hover effect for social icons in the footer */
+.footer .icon:hover {
+    color: #ED1C2E;
+}
+
+/* Hover effect for anchor links in the footer */
+.footer ul a:hover {
+    color: #ED1C2E;
+}
+
+/* Styles for the social icons container in the footer */
+.footer-social {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Styles for individual social icons in the footer */
+.footer-social img {
+    margin: 0 1rem;
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Styles for the copyright text in the footer */
+.footer-copyright {
+    font-size: 0.8rem;
+    margin-bottom: .5rem;
+    text-align: center;
+}
+
+/* Responsive Styles for Footer */
+@media only screen and (max-width: 1024px) {
+
+    /* Adjusting width of footer left section */
+    .footer-left {
+        width: 40%;
+    }
+
+    /* Adjusting width and margin of footer links section */
+    .footer-links {
+        width: 50%;
+        margin: 0;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    /* Adjusting layout for footer upper section in mobile view */
+    .footer-upper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Removing margin for footer left section in mobile view */
+    .footer-left {
+        margin: 0;
+    }
+
+    /* Removing margin for footer links section in mobile view */
+    .footer-links {
+        margin: 0;
+    }
+}
+
+@media only screen and (max-width: 426px) {
+
+    /* Adjusting width and margin of footer links section for smaller screens */
+    .footer-links {
+        width: 100%;
+        margin: 0;
+    }
+}

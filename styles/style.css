@@ -2,11 +2,31 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        'Roboto',
+        'Oxygen',
+        'Ubuntu',
+        'Cantarell',
+        'Fira Sans',
+        'Droid Sans',
+        'Helvetica Neue',
+        sans-serif;
 }
 
-#title {
-    text-align: center;
+.fa-facebook {
+    font-size: 50px;
 }
+
+.fa-twitter {
+    font-size: 50px;
+}
+
+.fa-instagram {
+    font-size: 50px;
+}
+
 
 .groupChart {
     display: flex;
@@ -22,63 +42,6 @@ body {
     width: fit-content;
 }
 
-.buttonGroup {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Button styles */
-button {
-    border: none;
-    margin: 10px;
-    padding: 10px 20px;
-    border-radius: 10px;
-    background-color: dodgerblue;
-    color: white;
-    transition: ease-in 0.3s;
-    /* Smooth transition effect */
-}
-
-/* Button hover effect */
-button:hover {
-    background-color: deepskyblue;
-    cursor: pointer;
-}
-
-.lineChart {
-    background-color: rgb(235, 56, 56);
-}
-
-.lineChart:hover {
-    background-color: rgba(249, 100, 100);
-}
-
-.line {
-    fill: none;
-    stroke-width: 2;
-}
-
-
-/* Styling for the footer */
-footer {
-    width: 100%;
-    /* Set width of the footer */
-}
-
-.line-halfMilMark {
-    stroke: red;
-    stroke-width: 0.5;
-}
-
-.highlighted {
-    stroke-width: 3px;
-    opacity: 1;
-}
-
-.unhighlighted {
-    opacity: 0.2;
-}
 
 .groupSelect {
     margin-top: 50px;
@@ -209,6 +172,8 @@ footer {
 }
 
 .toolTipChart {
+    left: 0;
+    top: 0;
     width: 150px;
     padding: 20px;
     max-height: fit-content;
@@ -220,6 +185,10 @@ footer {
 
 #tooltipMap {
     background-color: rgba(255, 255, 255, 1);
+}
+
+#tooltipLine {
+    padding: 10px;
 }
 
 .head-title {
