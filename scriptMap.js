@@ -260,15 +260,15 @@ var colorP, colorN;
 const drawMap = (year, title) => {
     d3.select("#chart svg").remove();
     // Define width and height for the SVG container
-    var w = 800; // Width
-    var h = 500; // Height
+    var w = 840; // Width
+    var h = 650; // Height
     var rightMargin = 100;
     var bottomMargin = 100;
     // Define the projection for the map
     var projection = d3.geoMercator()
         .center([0, 0]) // The geographical center of the map
         .translate([w / 2, h / 2 + 100]) // The SVG point that corresponds to the geographical center
-        .scale(90); // Scale of the map
+        .scale(120); // Scale of the map
 
     // Define the path generator for the map
     var path = d3.geoPath().projection(projection);
@@ -288,7 +288,6 @@ const drawMap = (year, title) => {
         .attr("height", h)
         .style("border", "1px solid black")
         .style("background", "")
-        .style("margin-top", "20px")
         .call(zoom); // Apply the zoom behavior to the SVG
     year = Number(year);
     var yearStr = String(year);
@@ -665,8 +664,8 @@ const drawMap = (year, title) => {
 var lineChart = (dataset, countriesSelected) => {
     // console.log("countries: ", countries);
     // set the dimensions and margins of the graph
-    const margin = { top: 10, right: 30, bottom: 100, left: 60 }, // Increased bottom margin
-        width = 700 - margin.left - margin.right, // Increased width
+    const margin = { top: 10, right: 30, bottom: 100, left: 50 }, // Increased bottom margin
+        width = 1126 - margin.left - margin.right, // Increased width
         height = 500 - margin.top - margin.bottom;
 
     d3.select("#my_dataviz svg").remove();
@@ -929,9 +928,9 @@ var lineChart = (dataset, countriesSelected) => {
 // ----------Bar 
 var barChart = (data, update = false) => {
     // set the dimensions and margins of the graph
-    var margin = { top: 20, right: 30, bottom: 40, left: 90 },
-        width = 500 - margin.left - margin.right,
-        height = 550 - margin.top - margin.bottom;
+    var margin = { top: 20, right: 30, bottom: 10, left: 20 },
+        width = 280 - margin.left - margin.right,
+        height = 650 - margin.top - margin.bottom;
     if (update) {
         var svg = d3.select("#barChart");
         // Add X axis
@@ -952,7 +951,7 @@ var barChart = (data, update = false) => {
         var y = d3.scaleBand()
             .range([0, height])
             .domain(data.map(function (d) { return d.country; }))
-            .padding(.1);
+            .padding(.5);
         svg.select(".yBarAxis")
             .call(d3.axisLeft(y));
 
@@ -980,6 +979,18 @@ var barChart = (data, update = false) => {
                 }
             });
 
+        svg.selectAll(".countryName")
+            .data(data)
+            .attr("class", "countryName")
+            .attr("y", function (d) { return y(d.country) - y.bandwidth() / 4; })
+            .transition() // start a transition
+            .delay(function (d, i) {
+                return i / data.length * 500;
+            })
+            .duration(1000) // for a duration of 1 second
+            .attr("x", 0)
+            .text(function (d) { return d.country; });
+
         var labels = svg.selectAll(".label")
             .data(data)
             .transition() // start a transition
@@ -987,6 +998,8 @@ var barChart = (data, update = false) => {
             .style('text-anchor', 'end')
             .style('text-align', 'center')
             .style('fill', 'white')
+            .style('font-size', '12px')
+            .style('font-weight', '600')
             .transition() // start a transition
             .delay(function (d, i) {
                 return i / data.length * 500;
@@ -1000,8 +1013,10 @@ var barChart = (data, update = false) => {
     }
 
     d3.select("#barChart").html("");
+
     // append the svg object to the body of the page
     var svg = d3.select("#barChart")
+        .style("border", "1px solid black")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -1015,22 +1030,22 @@ var barChart = (data, update = false) => {
             data[0].value
         ])
         .range([0, width]);
-    svg.append("g")
-        .attr("class", "xBarAxis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x))
-        .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
-        .style("text-anchor", "end");
+    // svg.append("g")
+    //     .attr("class", "xBarAxis")
+    //     .attr("transform", "translate(0," + height + ")")
+    //     .call(d3.axisBottom(x))
+    //     .selectAll("text")
+    //     .attr("transform", "translate(-10,0)rotate(-45)")
+    //     .style("text-anchor", "end");
 
     // Y axis
     var y = d3.scaleBand()
         .range([0, height])
         .domain(data.map(function (d) { return d.country; }))
-        .padding(.1);
-    svg.append("g")
-        .attr("class", "yBarAxis")
-        .call(d3.axisLeft(y));
+        .padding(.5);
+    // svg.append("g")
+    //     .attr("class", "yBarAxis")
+    //     .call(d3.axisLeft(y));
 
     //Bars
     svg.selectAll("rect")
@@ -1072,6 +1087,22 @@ var barChart = (data, update = false) => {
         .duration(1000) // for a duration of 1 second
         .attr("width", function (d) { return x(d.value); });
 
+
+    // Country Name
+    svg.selectAll(".countryName")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("class", "countryName")
+        .attr("y", function (d) { return y(d.country) - y.bandwidth() / 4; })
+        .transition() // start a transition
+        .delay(function (d, i) {
+            return i / data.length * 500;
+        })
+        .duration(1000) // for a duration of 1 second
+        .attr("x", 0)
+        .text(function (d) { return d.country; });
+
     //Text
     svg.selectAll(".label")
         .data(data)
@@ -1082,6 +1113,8 @@ var barChart = (data, update = false) => {
         .style('text-anchor', 'end')
         .style('text-align', 'center')
         .style('fill', 'white')
+        .style('font-size', '12px')
+        .style('font-weight', '600')
         .on("mouseover", function (d, i) {
             svg.selectAll("rect").filter(function (d, j) {
                 return i === j;
@@ -1133,6 +1166,7 @@ inputSlider.oninput = () => {
     slideValue.textContent = value;
     drawMap(value);
     barChart(getTop(data, value), update = true);
+    console.log(value, min, max, ((value - min) / (max - min)) * 100);
     // Calculate the left position based on the min and max values
     slideValue.style.left = `calc(${((value - min) / (max - min)) * 100}%)`;
 };

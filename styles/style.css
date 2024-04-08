@@ -30,23 +30,30 @@ body {
 
 .groupChart {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 #chart {
+    margin-right: 2px;
     display: flex;
     align-items: center;
     width: fit-content;
 }
 
 #my_dataviz {
+    margin-top: 10px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+#my_dataviz svg {
+    border: 1px solid black;
+}
+
 #barChart {
+    margin-left: 2px;
     display: flex;
     align-items: center;
     width: fit-content;
