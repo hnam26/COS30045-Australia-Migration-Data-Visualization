@@ -150,7 +150,7 @@ class CountrySet {
 
     drawLine() {
         if (this.selected.length === 0) {
-            d3.select("#my_dataviz svg").remove();
+            lineChart(this.data, ['Australia']);
         } else
             lineChart(this.data, this.selected);
     }
@@ -711,7 +711,6 @@ var lineChart = (dataset, countriesSelected) => {
 
     });
 
-    console.log(countriesSelected);
     // // delete countryData['country'];
 
     var datasetFormatted = Object.keys(countriesSelected).map(function (key) {
@@ -843,9 +842,7 @@ var lineChart = (dataset, countriesSelected) => {
     // Tooltip
     const Tooltip = d3.select("#tooltipLine");
     const mouseover = function (event, d) {
-        Tooltip
-            .style("visibility", "visible")
-            .style("width", "200px");
+
     };
     const mousemove = function (x, y, d, name) {
         Tooltip
@@ -865,6 +862,10 @@ var lineChart = (dataset, countriesSelected) => {
 
         tooltipLine.select('.time')
             .text(`Time: ${d.year}`);
+
+        Tooltip
+            .style("visibility", "visible")
+            .style("width", "200px");
 
     };
     const mouseleave = function (event, d) {
