@@ -1058,7 +1058,7 @@ var barChart = (data, update = false) => {
             "translate(" + margin.left + "," + margin.top + ")");
 
     svg.append('text')
-        .text('Top 10')
+        .text('TOP 10')
         .attr('class', 'barChartTitle')
         .attr('x', 0)
         .attr('y', 20)
