@@ -124,9 +124,19 @@ class CountrySet {
     }
 
     add(country) {
-        this.selected.push(country);
-        this.updateCheckBox();
-        this.draw();
+        for (let i = 0; i < this.features.length; i++) {
+            if (this.features[i].properties.name === countries[country] && this.features[i].properties.data !== undefined) {
+                if (this.selected.length >= 5) {
+                    this.deleteBar(this.selected[0]);
+                    this.deleteCountryMap(this.selected[0]);
+                    this.selected.shift();
+                }
+                this.selected.push(country);
+                this.updateCheckBox();
+                this.draw();
+                return;
+            }
+        }
     }
 
     remove(country) {
@@ -139,7 +149,10 @@ class CountrySet {
     }
 
     drawLine() {
-        lineChart(this.data, this.selected);
+        if (this.selected.length === 0) {
+            d3.select("#my_dataviz svg").remove();
+        } else
+            lineChart(this.data, this.selected);
     }
 
     drawCountryMap() {
@@ -698,6 +711,7 @@ var lineChart = (dataset, countriesSelected) => {
 
     });
 
+    console.log(countriesSelected);
     // // delete countryData['country'];
 
     var datasetFormatted = Object.keys(countriesSelected).map(function (key) {
@@ -733,8 +747,10 @@ var lineChart = (dataset, countriesSelected) => {
 
     // Add Y axis
     const y = d3.scaleLinear()
-        .domain([d3.min(values) < 0 ? d3.min(values) * 2 : d3.min(values) / 2,
-        d3.max(values) > 0 ? d3.max(values) * 2 : d3.max(values) / 2])
+        .domain([
+            d3.min(values),
+            d3.max(values)
+        ])
         .range([height, 0]);
     g.append("g")
         .call(d3.axisLeft(y));
@@ -828,7 +844,8 @@ var lineChart = (dataset, countriesSelected) => {
     const Tooltip = d3.select("#tooltipLine");
     const mouseover = function (event, d) {
         Tooltip
-            .style("visibility", "visible");
+            .style("visibility", "visible")
+            .style("width", "200px");
     };
     const mousemove = function (x, y, d, name) {
         Tooltip
@@ -852,7 +869,8 @@ var lineChart = (dataset, countriesSelected) => {
     };
     const mouseleave = function (event, d) {
         Tooltip
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
+            .style("width", "0px");
     };
 
 
@@ -951,7 +969,7 @@ var barChart = (data, update = false) => {
 
         // Y axis
         var y = d3.scaleBand()
-            .range([0, height])
+            .range([30, height])
             .domain(data.map(function (d) { return d.country; }))
             .padding(.5);
         svg.select(".yBarAxis")
@@ -1026,6 +1044,16 @@ var barChart = (data, update = false) => {
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append('text')
+        .text('Top 10')
+        .attr('class', 'barChartTitle')
+        .attr('x', 0)
+        .attr('y', 20)
+        .style('font-size', '25px')
+        .style('font-weight', '600');
+
+
     // Add X axis
     var x = d3.scaleLinear()
         .domain([
@@ -1043,7 +1071,7 @@ var barChart = (data, update = false) => {
 
     // Y axis
     var y = d3.scaleBand()
-        .range([0, height])
+        .range([30, height])
         .domain(data.map(function (d) { return d.country; }))
         .padding(.5);
     // svg.append("g")
@@ -1169,9 +1197,9 @@ inputSlider.oninput = () => {
     slideValue.textContent = value;
     drawMap(value);
     barChart(getTop(data, value), update = true);
-    console.log(value, min, max, ((value - min) / (max - min)) * 100);
     // Calculate the left position based on the min and max values
-    slideValue.style.left = `calc(${((value - min) / (max - min)) * 100}%)`;
+    var percentage = (value - min) / (max - min) * 100;
+    slideValue.style.left = `calc(${percentage}% + ${(50 - percentage) / 100 * 20}px)`;
 };
 const selectElement = document.querySelector('.selectItem');
 
@@ -1188,7 +1216,8 @@ selectElement.onchange = function () {
             inputSlider.min = 2012;
             d3.select('.value .left')
                 .text('2012');
-            slideValue.style.left = `calc(${((inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min)) * 100}%)`;
+            var percentage = (inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min) * 100;
+            slideValue.style.left = `calc(${percentage}% + ${(50 - percentage) / 100 * 20}px)`;
             init('data/net_overseas_migration_12_23_abs.csv', "oversea migration");
             Country.reset();
             break;
@@ -1202,7 +1231,8 @@ selectElement.onchange = function () {
             inputSlider.min = 2012;
             d3.select('.field .left')
                 .text('2012');
-            slideValue.style.left = `calc(${((inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min)) * 100}%)`;
+            var percentage = (inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min) * 100;
+            slideValue.style.left = `calc(${percentage}% + ${(50 - percentage) / 100 * 20}px)`;
             init('data/gdp.csv', "gdp");
             Country.reset();
             break;
@@ -1218,7 +1248,7 @@ selectElement.onchange = function () {
             d3.select('.field .left')
                 .text('2019');
             slideValue.textContent = 2019;
-            slideValue.style.left = `calc(0%)`;
+            slideValue.style.left = `calc(0% + 10px)`;
             init('data/covid_casualty.csv', "covid_casualty");
             Country.reset();
             break;
