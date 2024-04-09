@@ -1,160 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <!-- Metadata and dependencies -->
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="styles/style.css">
-        <link rel="stylesheet" href="styles/navbar.css">
-        <link rel="stylesheet" href="styles/footer.css">
+<head>
+    <!-- Metadata and dependencies -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
 
-    </head>
-
-    <body>
-        <nav class="navbar">
-            <!-- Swinburne logo -->
-            <div class="navbar-logo">
-                <a href="/">
-                    <img src="images/basic-logo.png" alt="Swinburne logo" />
-                </a>
+<body>
+    <nav class="navbar" >
+        <!-- Swinburne logo -->
+        <div class="navbar-logo">
+            <a href="/">
+                <img src="images/basic-logo.png" alt="Swinburne logo" />
+            </a>
+        </div>
+        
+        <!-- Right-side navigation and menu toggle -->
+        <div class="right-side">
+            <!-- Hamburger menu icon -->
+            <div class="navbar-toggle" onclick="toggleMenu()">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
             </div>
-
-            <!-- Right-side navigation and menu toggle -->
-            <div class="right-side">
-                <!-- Hamburger menu icon -->
-                <div class="navbar-toggle" onclick="toggleMenu()">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
-
-                <!-- Navigation links -->
-                <ul class="navbar-links">
-                    <li><a href="./map.html">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li>
-                        <button class="sign-in-button">Sign in</button>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="groupSelect">
-            <div class="dropdown">
-                <label for="indicator">Indicator</label><br>
-                <select class="selectItem" id="indicator" name="indicator">
-                    <option value="1" selected>Over sea migration</option>
-                    <option value="2">GDP</option>
-                    <option value="3">Covid causualty</option>
-                </select>
-            </div>
-
-            <div class="dropdown">
-                <label for="geographic-scope">Geographic Scope</label><br>
-                <input type="text" id="search" onkeyup="filterCheckboxes()" placeholder="Search for names..">
-                <span id="buttonArrow" class="">
-                </span>
-                <div id="geographic-scope" class="checkboxes">
-                    <!-- Checkboxes will be added here -->
-                </div>
-            </div>
-            <div class="range">
-                <div class="sliderValue">
-                    <span>2012</span>
-                </div>
-                <div class="field">
-                    <div class="value left">2012</div>
-                    <input type="range" id="scrollbar" min="2012" max="2022" value="2012">
-                    <div class="value right">2022</div>
-                </div>
+            
+            <!-- Navigation links -->
+            <ul class="navbar-links">
+                <li><a href="./map.html">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li>
+                    <button class="sign-in-button">Sign in</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="banner" data-aos="fade-up"  data-aos-duration="3000">
+        <img src="./photoholgic-jK9dT34TfuI-unsplash.jpg" alt="">
+        <div class="banner-content">
+            <h1>Australia's International Migration and Its Influencing Factors</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, error! Tempore, quos perspiciatis suscipit corporis dolorem rerum ullam harum perferendis doloribus illo vel asperiores quis error est ex aliquam nisi?</p> 
+        </div>
+        
+    </div>
+    <div class="groupSelect" data-aos="fade-up" data-aos-delay="3000" data-aos-duration="3000">
+        <div class="dropdown">
+            <label for="indicator">Indicator</label><br>
+            <select class="selectItem" id="indicator" name="indicator">
+                <option value="1" selected>Over sea migration</option>
+                <option value="2">GDP</option>
+                <option value="3">Covid causualty</option>
+            </select>
+        </div>
+        
+        <div class="dropdown">
+            <label for="geographic-scope">Geographic Scope</label><br>
+            <input type="text" id="search" onkeyup="filterCheckboxes()" placeholder="Search for names..">
+            <span id="buttonArrow" class="">
+            </span>
+            <div id="geographic-scope" class="checkboxes">
+                <!-- Checkboxes will be added here -->
             </div>
         </div>
-        <div class="groupChart">
-            <div id="chart">
-                <div id="tooltipMap" class="toolTipChart">
-                    <div class="head-title">
-                        <span></span>
-                        <h3>USA</h3>
-                    </div>
-                    <hr>
-                    <p>Value: 1000</p>
-                </div>
+        <div class="range">
+            <div class="sliderValue">
+                <span>2012</span>
             </div>
-            <div id="barChart"></div>
+            <div class="field">
+                <div class="value left">2012</div>
+                <input type="range" id="scrollbar" min="2012" max="2022" value="2012">
+                <div class="value right">2022</div>
+            </div>
         </div>
-        <div id="my_dataviz">
-            <!-- SVG -->
-            <div id="tooltipLine" class="toolTipChart">
+    </div>
+    <div class="groupChart">
+        <div id="chart">
+            <div id="tooltipMap" class="toolTipChart">
                 <div class="head-title">
                     <span></span>
-                    <h3></h3>
+                    <h3>USA</h3>
                 </div>
                 <hr>
-                <p class="value"></p>
-                <p class="time"></p>
+                <p>Value: 1000</p>
             </div>
         </div>
-
-
-        <footer class="footer">
-            <!-- Upper section of the footer -->
-            <div class='footer-upper'>
-                <!-- Left section with logo and location -->
-                <div class="footer-left">
-                    <div class="footer-img">
-                        <img src="images/full-logo.png" alt="Swinburne logo" />
-                    </div>
-                    <div class="footer-location">
-                        <p><b>Location</b>: Lot 2A September 2th Street, Hai Chau District, Da Nang city</p>
+        <div id="barChart"></div>
+    </div>
+    <div id="my_dataviz">
+        <!-- SVG -->
+        <div id="tooltipLine" class="toolTipChart">
+            <div class="head-title">
+                <span></span>
+                <h3></h3>
+            </div>
+            <hr>
+            <p class="value"></p>
+            <p class="time"></p>
+        </div>
+    </div>
+    
+    
+    <footer class="footer">
+        <!-- Upper section of the footer -->
+        <div class='footer-upper'>
+            <!-- Left section with logo and location -->
+            <div class="footer-left">
+                <div class="footer-img">
+                    <img src="images/full-logo.png" alt="Swinburne logo" />
+                </div>
+                <div class="footer-location">
+                    <p><b>Location</b>: Lot 2A September 2th Street, Hai Chau District, Da Nang city</p>
+                </div>
+            </div>
+            
+            <!-- Links section with various categories -->
+            <div class="footer-links">
+                <div class="footer-link">
+                    <p><b>About</b></p>
+                    <ul>
+                        <li><a href="./map.html">Our company</a></li>
+                    </ul>
+                </div>
+                <div class="footer-link">
+                    <p><b>Contact us</b></p>
+                    <div class="footer-social">
+                        <a href="./map.html">
+                            <i class="fa fa-facebook icon"></i>
+                        </a>
+                        <a href="./">
+                            <i class="fa fa-twitter icon"></i>
+                        </a>
+                        <a href="./">
+                            <i class="fa fa-instagram icon"></i>
+                        </a>
                     </div>
                 </div>
-
-                <!-- Links section with various categories -->
-                <div class="footer-links">
-                    <div class="footer-link">
-                        <p><b>About</b></p>
-                        <ul>
-                            <li><a href="./map.html">Our company</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-link">
-                        <p><b>Contact us</b></p>
-                        <div class="footer-social">
-                            <a href="./map.html">
-                                <i class="fa fa-facebook icon"></i>
-                            </a>
-                            <a href="./">
-                                <i class="fa fa-twitter icon"></i>
-                            </a>
-                            <a href="./">
-                                <i class="fa fa-instagram icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="footer-link">
-                        <p><b>Feedback</b></p>
-                        <ul>
-                            <li><a href="./map.html">Share opinion</a></li>
-                        </ul>
-                    </div>
+                <div class="footer-link">
+                    <p><b>Feedback</b></p>
+                    <ul>
+                        <li><a href="./map.html">Share opinion</a></li>
+                    </ul>
+                </div>
                 
-                </div>
             </div>
-            <hr />
-
-            <!-- Copyright section -->
-            <div class="footer-copyright">
-                © Swinburne 2024 | Copyright and disclaimer
-            </div>
-        </footer>
-    </body>
-    <script src="scriptMap.js"></script>
-
+        </div>
+        <hr />
+        
+        <!-- Copyright section -->
+        <div class="footer-copyright">
+            © Swinburne 2024 | Copyright and disclaimer
+        </div>
+    </footer>
+</body>
+<script src="scriptMap.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init(
+        once= true
+    )
+</script>
 </html>
