@@ -13,6 +13,7 @@ body {
         'Droid Sans',
         'Helvetica Neue',
         sans-serif;
+    box-sizing: border-box;
 }
 
 .groupChart {
@@ -64,12 +65,12 @@ body {
 
 .dropdown {
     width: 260px;
-    margin: 20px 20px ;
+    margin: 20px 20px;
     display: inline-block;
     position: relative;
 }
 
-.dropdown select{
+.dropdown select {
     height: 2.2em;
     margin-top: 8px;
     border-radius: 5px;
@@ -85,6 +86,7 @@ body {
     font-size: 0.9em;
     width: 99.8%;
 }
+
 .dropdown>label {
     font-size: 1.2em;
     font-weight: 500;
@@ -123,7 +125,7 @@ body {
     width: 250px;
     background-color: white;
     border-radius: 10px;
-    padding: 0 ;
+    padding: 0 65px 0 45px;
     margin-top: 25px;
 }
 
@@ -138,10 +140,10 @@ body {
     width: 45px;
     text-align: center;
     font-weight: 500;
-    top: -40px;
+    top: -30px;
     transform: translateX(-50%);
     line-height: 55px;
-    left: 0%;
+    left: calc(0% + 10px);
     z-index: 2;
 }
 
@@ -165,8 +167,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 20px 20 0px;
     height: 100%;
+    width: 100%;
 }
 
 .range .field .value {
@@ -192,6 +194,7 @@ body {
     border-radius: 5px;
     outline: none;
     border: none;
+    margin: 0;
 }
 
 .range .field input::-webkit-slider-thumb {
@@ -202,9 +205,9 @@ body {
     background-color: #fee6dc;
     /* Change this to your desired color */
     border-radius: 50%;
-    border: 1px solid #fee6dc;
-    /* Change this to your desired color */
     cursor: pointer;
+
+    /* Adjust as needed */
 }
 
 .toolTipChart {
@@ -224,6 +227,7 @@ body {
 }
 
 #tooltipLine {
+    width: 0px;
     padding: 5px 10px 3px 10px;
 }
 
