@@ -304,6 +304,15 @@ const drawMap = (year, title) => {
         .style("border-radius", "5px")
         .style("background", "")
         .call(zoom); // Apply the zoom behavior to the SVG
+
+    svg.append('text')
+        .attr('class', 'note')
+        .text('Click the left mouse button to select countries and view their data.')
+        .style('font-size', '12px')
+        .attr('x', 10)
+        .attr('y', h - 20);
+
+
     year = Number(year);
     var yearStr = String(year);
     // Get the last two digits of the next year
