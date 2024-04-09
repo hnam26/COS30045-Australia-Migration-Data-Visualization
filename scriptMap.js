@@ -498,12 +498,12 @@ const drawMap = (year, title) => {
 
     gradientP.append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#fee6dc")
+        .attr("stop-color", "#deebf7")
         .attr("stop-opacity", 1);
 
     gradientP.append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#fd3a38")
+        .attr("stop-color", "#3182bd")
         .attr("stop-opacity", 1);
 
     // Second gradient
@@ -518,12 +518,12 @@ const drawMap = (year, title) => {
 
     gradientN.append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#C1EFFF")
+        .attr("stop-color", "#faef9b")
         .attr("stop-opacity", 1);
 
     gradientN.append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#1473e6")
+        .attr("stop-color", "#f6d776")
         .attr("stop-opacity", 1);
 
     legend.append("rect")
