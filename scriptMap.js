@@ -1227,7 +1227,7 @@ selectElement.onchange = function () {
             );
             inputSlider.min = 2015;
             d3.select('.value .left')
-                .text('2012');
+                .text('2015');
             var percentage = (inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min) * 100;
             slideValue.style.left = `calc(${percentage}% + ${(50 - percentage) / 100 * 20}px)`;
             init('data/net_overseas_migration_12_23_abs.csv', "oversea migration");
@@ -1242,7 +1242,7 @@ selectElement.onchange = function () {
             );
             inputSlider.min = 2015;
             d3.select('.field .left')
-                .text('2012');
+                .text('2015');
             var percentage = (inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min) * 100;
             slideValue.style.left = `calc(${percentage}% + ${(50 - percentage) / 100 * 20}px)`;
             init('data/gdp.csv', "gdp");
