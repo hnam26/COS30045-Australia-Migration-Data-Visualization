@@ -1,3 +1,4 @@
+
 // Function to load data from a CSV file asynchronously
 function loadData(csv) {
     return new Promise((resolve, reject) => {
@@ -157,7 +158,7 @@ class CountrySet {
     drawCountryMap() {
         this.selected.forEach(c => {
             d3.select(`.map .${formatName(this.countries[c])}`)
-                .style("fill", "orange");
+                .style("fill", "#a3a3a3");
         });
     }
 
@@ -170,7 +171,7 @@ class CountrySet {
     drawBar() {
         this.selected.forEach(c => {
             d3.select(`.bar-${formatName(this.countries[c])}`)
-                .style("fill", "orange");
+                .style("fill", "#a3a3a3");
         });
     }
 
@@ -239,7 +240,7 @@ const init = async (csv, title) => {
                         if (this.checked) {
 
                             d3.select(`.map .${formatName(countries[this.value])}`)
-                                .style("fill", "orange");
+                                .style("fill", "#a3a3a3");
                             Country.add(this.value);
 
                         } else {
@@ -323,11 +324,11 @@ const drawMap = (year, title) => {
     var minNegativeValue = d3.min(negativeData, (d) => convertStringToNumber(d[time]));
     var maxNegativeValue = d3.max(negativeData, (d) => convertStringToNumber(d[time]));
 
-    colorP = d3.scaleSequential((t) => d3.interpolate('#fee6dc', '#fd3a38')(t));
+    colorP = d3.scaleSequential((t) => d3.interpolate('#deebf7', '#3182bd')(t));
     if (maxPositiveValue)
         colorP.domain([minPositiveValue, maxPositiveValue]);
 
-    colorN = d3.scaleSequential((t) => d3.interpolate('#C1EFFF', '#1473e6')(t));
+    colorN = d3.scaleSequential((t) => d3.interpolate('#faef9b', '#f6d776')(t));
     if (minNegativeValue)
         colorN.domain([-maxNegativeValue, -minNegativeValue]);
 
@@ -377,7 +378,7 @@ const drawMap = (year, title) => {
                         var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
                         if (value !== null) {
                             Country.add(country);
-                            return "orange";
+                            return "#a3a3a3";
                         } else {
                             return "#eee";
                         }
@@ -389,7 +390,7 @@ const drawMap = (year, title) => {
             d3.select(this)
                 .transition()
                 .duration(300)
-                .style("fill", "orange");
+                .style("fill", "#a3a3a3");
             var value = convertStringToNumber(d.properties.data ? d.properties.data[time] : null);
             showToolTip(value);
             tooltipMap.style("visibility", "visible");
@@ -470,7 +471,7 @@ const drawMap = (year, title) => {
                 }
                 return color;
             } else {
-                return "orange";
+                return "#a3a3a3";
             }
 
 
@@ -994,7 +995,7 @@ var barChart = (data, update = false) => {
                     var color = d3.select(`path.map.${formatName(countries[d.country])}`).attr("color");
                     return color;
                 } else {
-                    return "orange";
+                    return "#a3a3a3";
                 }
             });
 
@@ -1091,7 +1092,7 @@ var barChart = (data, update = false) => {
             return color;
         })
         .on("mouseover", function (d) {
-            d3.select(this).style("fill", "orange");
+            d3.select(this).style("fill", "#a3a3a3");
         })
         .on("mouseout", function (d) {
             if (!Country.isHavingCountry(d.country)) {
@@ -1102,7 +1103,7 @@ var barChart = (data, update = false) => {
             }
         })
         .on("click", function (d) {
-            d3.select(this).style("fill", "orange");
+            d3.select(this).style("fill", "#a3a3a3");
             if (!Country.isHavingCountry(d.country)) {
                 Country.add(d.country);
             } else {
@@ -1149,7 +1150,7 @@ var barChart = (data, update = false) => {
             svg.selectAll("rect").filter(function (d, j) {
                 return i === j;
             })
-                .style("fill", "orange");
+                .style("fill", "#a3a3a3");
         })
         .on("mouseout", function (d, i) {
             svg.selectAll("rect").filter(function (d, j) {
