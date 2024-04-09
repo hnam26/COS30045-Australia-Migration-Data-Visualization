@@ -1225,7 +1225,7 @@ selectElement.onchange = function () {
                     unit: 'people'
                 }
             );
-            inputSlider.min = 2012;
+            inputSlider.min = 2015;
             d3.select('.value .left')
                 .text('2012');
             var percentage = (inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min) * 100;
@@ -1240,7 +1240,7 @@ selectElement.onchange = function () {
                     unit: 'USD'
                 }
             );
-            inputSlider.min = 2012;
+            inputSlider.min = 2015;
             d3.select('.field .left')
                 .text('2012');
             var percentage = (inputSlider.value - inputSlider.min) / (inputSlider.max - inputSlider.min) * 100;

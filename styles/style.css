@@ -22,8 +22,7 @@ body {
     box-shadow: 10px;
 }
 
-.banner-content
-{
+.banner-content {
     opacity: 0.8;
     position: absolute;
     top: 50%;
@@ -34,8 +33,9 @@ body {
     text-align: center;
     z-index: 1;
     background-color: white;
-    
+
 }
+
 #banner h1 {
     position: absolute;
     z-index: 2;
@@ -225,7 +225,6 @@ nav {
     position: absolute;
     font-size: 18px;
     font-weight: 600;
-    /* color: rgb(254, 221, 212); */
 }
 
 .range .field .value.left {
@@ -253,7 +252,6 @@ nav {
     height: 20px;
     width: 20px;
     background-color: #deebf7;
-    /* Change this to your desired color */
     border-radius: 50%;
     cursor: pointer;
 
