@@ -50,7 +50,7 @@
 
 /* Hover effect for navbar links */
 .navbar-links li:hover {
-    border-bottom: #ed1c2e 1px solid;
+    border-bottom: #3182bd 1px solid;
 }
 
 /* Styles for anchor links within navbar links */
@@ -80,8 +80,8 @@
 /* Hover effect for the sign-in button */
 .sign-in-button:hover {
     background-color: #fff;
-    color: #ed1c2e;
-    border: #ed1c2e 1px solid;
+    color: #3182bd;
+    border: #3182bd 1px solid;
 }
 
 
