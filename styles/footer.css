@@ -71,12 +71,12 @@
 
 /* Hover effect for social icons in the footer */
 .footer .icon:hover {
-    color: #ED1C2E;
+    color: #3182bd;
 }
 
 /* Hover effect for anchor links in the footer */
 .footer ul a:hover {
-    color: #ED1C2E;
+    color: #3182bd;
 }
 
 /* Styles for the social icons container in the footer */
