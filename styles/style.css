@@ -15,19 +15,6 @@ body {
         sans-serif;
 }
 
-.fa-facebook {
-    font-size: 50px;
-}
-
-.fa-twitter {
-    font-size: 50px;
-}
-
-.fa-instagram {
-    font-size: 50px;
-}
-
-
 .groupChart {
     display: flex;
     justify-content: center;
@@ -50,6 +37,9 @@ body {
 
 #my_dataviz svg {
     border: 1px solid black;
+    border-radius: 5px;
+    margin-top: -5px;
+    margin-bottom: 5px;
 }
 
 #barChart {
@@ -59,24 +49,53 @@ body {
     width: fit-content;
 }
 
+/* Features */
 .groupSelect {
-    margin-top: 50px;
-    width: 100%;
+    width: 1000px;
+    margin: 20px 0px 0 200px;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+}
+
+.groupSelect .dropdown:nth-child(2) {
+    margin-right: 80px;
 }
 
 .dropdown {
-    width: 30%;
-    margin: 20px;
+    width: 260px;
+    margin: 20px 20px ;
     display: inline-block;
     position: relative;
 }
 
+.dropdown select{
+    height: 2.2em;
+    margin-top: 8px;
+    border-radius: 5px;
+    padding: 5px
+}
+
+.dropdown>input {
+    height: 2em;
+    margin-top: 8px;
+    padding: 2px 0 2px 10px;
+    border-radius: 5px;
+    border-width: 1px;
+    font-size: 0.9em;
+    width: 99.8%;
+}
+.dropdown>label {
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
 .selectItem {
     width: 100%;
+    margin-top: 2px;
+    height: 20px;
     padding: 10px;
-    font-size: 16px;
+    font-size: 1em;
 }
 
 .checkboxes {
@@ -101,11 +120,11 @@ body {
 
 .range {
     height: 80px;
-    width: 380px;
+    width: 250px;
     background-color: white;
     border-radius: 10px;
-    padding: 0 65px 0 45px;
-
+    padding: 0 ;
+    margin-top: 25px;
 }
 
 .range .sliderValue {
@@ -146,6 +165,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 20px 20 0px;
     height: 100%;
 }
 
@@ -225,3 +245,5 @@ body {
     border-radius: 50%;
     background: aqua;
 }
+
+/* Style for line charts */

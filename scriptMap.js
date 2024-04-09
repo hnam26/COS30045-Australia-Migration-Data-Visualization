@@ -287,6 +287,7 @@ const drawMap = (year, title) => {
         .attr("width", w)
         .attr("height", h)
         .style("border", "1px solid black")
+        .style("border-radius", "5px")
         .style("background", "")
         .call(zoom); // Apply the zoom behavior to the SVG
     year = Number(year);
@@ -1016,6 +1017,7 @@ var barChart = (data, update = false) => {
 
     // append the svg object to the body of the page
     var svg = d3.select("#barChart")
+        .style("border-radius", "5px")
         .style("border", "1px solid black")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
