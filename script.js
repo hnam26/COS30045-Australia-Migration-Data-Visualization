@@ -759,7 +759,7 @@ var lineChart = (dataset, countriesSelected) => {
     const y = d3.scaleLinear()
         .domain([
             d3.min(values),
-            d3.max(values)
+            d3.max(values) * 1.5
         ])
         .range([height, 0]);
     g.append("g")
